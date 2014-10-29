@@ -1,0 +1,13 @@
+;;; key-chord-autoloads.el --- automatically extracted autoloads
+;;
+;;; Code:
+
+
+(provide 'key-chord-autoloads)
+;; Local Variables:
+;; version-control: never
+;; no-byte-compile: t
+;; no-update-autoloads: t
+;; coding: utf-8
+;; End:
+;;; key-chord-autoloads.el ends here
