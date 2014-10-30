@@ -1,19 +1,36 @@
-# Elixir Mode [![Build Status](https://travis-ci.org/elixir-lang/emacs-elixir.svg?branch=master)](https://travis-ci.org/elixir-lang/emacs-elixir)
+[![License GPL 3][badge-license]](http://www.gnu.org/licenses/gpl-3.0.txt)
+[![Build Status](https://travis-ci.org/elixir-lang/emacs-elixir.svg?branch=master)](https://travis-ci.org/elixir-lang/emacs-elixir)
+[![MELPA Stable](http://stable.melpa.org/packages/elixir-mode-badge.svg)](http://stable.melpa.org/#/elixir-mode)
+
+# Elixir Mode
 
 Provides font-locking, indentation and navigation support for the
 [Elixir programming language.](http://elixir-lang.org/)
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Interactive Commands](#interactive-commands)
+  - [Configuration](#configuration)
+  - [Hooks](#hooks)
+  - [Keymapping](#keymapping)
+- [Notes](#notes)
+- [Elixir Tooling Integration](#elixir-tooling-integration)
+- [History](#history)
+- [Contributing](#contributing)
 
 ## Installation
 
 ### ELPA
 
 elixir-mode is available on the community maintained repository -
-[MELPA](http://melpa-stable.milkbox.net/). Just run `M-x package-install
+[MELPA](http://stable.melpa.org/). Just run `M-x package-install
 [RET] elixir-mode [RET]` inside your emacs and you're ready to go.
 
-**Please take note of the MELPA URL.** If you are using http://melpa.milkbox.net
-then you are not getting the latest *stable* version of this package. 
-Please use http://melpa-stable.milkbox.net when retrieving this package.
+**Please take note of the MELPA URL.** We strive for the most responsible
+release management possible (to the best of our knowledge & abilities). To that
+end, please ensure you are *only* using [MELPA Stable](http://stable.melpa.org)
+to retrieve this package. If you use [regular MELPA](http://melpa.org), you will
+be installing the latest changes to master, not the latest release.
 
 If you're not already using ELPA, check the [emacswiki](http://www.emacswiki.org/emacs/ELPA) page to get
 familiar with it.
@@ -23,7 +40,7 @@ familiar with it.
 If you would prefer to install from source, you can download the latest tagged
 release from https://github.com/elixir-lang/emacs-elixir/releases/latest/.
 
-After unzipping either the tarball or zipfile into your desired location, 
+After unzipping either the tarball or zipfile into your desired location,
 add the following in your .emacs file:
 
 ```lisp
@@ -180,9 +197,9 @@ experience, you can add the following to your `elixir-mode-hook`:
                (ruby-end-mode +1)))
 ```
 
-## Mix
+## Elixir Tooling Integration
 
-If you looking for integrated emacs [mix](http://elixir-lang.org/getting_started/mix/1.html) support, see here: [elixir-mix.el](https://github.com/tonini/elixir-mix.el)
+If you looking for elixir tooling integration for emacs, check: [alchemist.el](https://github.com/tonini/alchemist.el)
 
 ## History
 
@@ -192,3 +209,5 @@ This mode is based on the
 ## Contributing
 
 Please read [CONTRIBUTING.md](https://github.com/elixir-lang/emacs-elixir/blob/master/CONTRIBUTING.md) for guidelines on how to contribute to this project.
+
+[badge-license]: https://img.shields.io/badge/license-GPL_3-green.svg

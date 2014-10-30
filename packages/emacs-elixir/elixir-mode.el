@@ -8,7 +8,7 @@
 ;; URL: https://github.com/elixir-lang/emacs-elixir
 ;; Created: Mon Nov 7 2011
 ;; Keywords: languages elixir
-;; Version: 1.3.0
+;; Version: 2.0.2
 
 ;; This file is not a part of GNU Emacs.
 
@@ -136,8 +136,6 @@
 
 (require 'elixir-smie)  ; syntax and indentation support
 
-(defvar elixir-mode--version "1.4.10")
-
 (defvar elixir-mode--website-url
   "http://elixir-lang.org")
 
@@ -234,9 +232,9 @@
 (defvar elixir-atom-face 'elixir-atom-face)
 (defface elixir-atom-face
   '((((class color) (min-colors 88) (background light))
-     :foreground "#d75350")
+     :foreground "RoyalBlue4")
     (((class color) (background dark))
-     (:foreground "#d75350"))
+     (:foreground "light sky blue"))
     (t nil))
   "For use with atoms & map keys."
   :group 'font-lock-faces)
@@ -541,10 +539,23 @@ Optional argument ARGS-P ."
   (browse-url (concat elixir-mode--website-url "/docs/stable/elixir")))
 
 ;;;###autoload
-(defun elixir-mode-show-version ()
-  "Elixir mode print version."
-  (interactive)
-  (message (format "elixir-mode v%s" elixir-mode--version)))
+(defun elixir-mode-version (&optional show-version)
+  "Get the Elixir-Mode version as string.
+
+If called interactively or if SHOW-VERSION is non-nil, show the
+version in the echo area and the messages buffer.
+
+The returned string includes both, the version from package.el
+and the library version, if both a present and different.
+
+If the version number could not be determined, signal an error,
+if called interactively, or if SHOW-VERSION is non-nil, otherwise
+just return nil."
+  (interactive (list t))
+  (let ((version (pkg-info-version-info 'elixir-mode)))
+    (when show-version
+      (message "Elixir-Mode version: %s" version))
+    version))
 
 (defun elixir-mode--code-eval-string-command (file)
   (format "%s -e 'IO.puts inspect(elem(Code.eval_string(File.read!(\"%s\")), 0))'"
@@ -625,7 +636,7 @@ Argument END End of the region."
     "---"
     ["elixir-mode on GitHub" elixir-mode-open-modegithub]
     ["Elixir homepage" elixir-mode-open-elixirhome]
-    ["About" elixir-mode-show-version]
+    ["About" elixir-mode-version]
     ))
 
 ;;;###autoload

@@ -27,7 +27,7 @@
 (menu-bar-mode -1)
 
 (smex-initialize)
-; (ido-hacks 1)
+;(ido-hacks 1)
 
 (projectile-mode t)
 
@@ -139,10 +139,11 @@
 (setq evil-overriding-maps nil)
 (setq evil-intercept-maps nil)
 
-(define-key evil-normal-state-map (kbd "RET") 'save-buffer)
-
 ;; Don't wait for any other keys after escape is pressed.
 (setq evil-esc-delay 0)
+
+;; Don't show default text in command bar
+(add-hook 'minibuffer-setup-hook (lambda () (evil-ex-remove-default)))
 
 ;; Make HJKL keys work in special buffers
 (evil-add-hjkl-bindings magit-branch-manager-mode-map 'emacs
@@ -166,19 +167,8 @@
   "t" 'projectile-find-file
   "b" 'ido-switch-buffer
   "cc" 'evilnc-comment-or-uncomment-lines
-  ; "f" 'helm-projectile
-  ; "a" 'projectile-ack
-  ; "bl" 'buffer-menu
-  ; "bk" 'ido-kill-buffer
+  "ag" 'projectile-ag
   "," 'switch-to-previous-buffer
-  ; "b." 'next-buffer
-  ; "c"  'flash-crosshairs
-  "rr" 'rinari-launch
-  "rc" 'rinari-find-controller
-  "rm" 'rinari-find-model
-  "rh" 'rinari-find-helper
-  "rt" 'rinari-find-test
-  "rs" 'rinari-find-rspec
   ; "gg" 'git-gutter+:toggle
   ; "gd" 'git-gutter+:popup-diff
   ; "gp" 'git-gutter+:previous-hunk
@@ -217,6 +207,14 @@ Repeated invocations toggle between the two most recently open buffers."
   (if (buffer-exists "*Ibuffer*")  (kill-buffer "*Ibuffer*"))
   (switch-to-buffer (other-buffer (current-buffer) 1)))
 
+;; =============================================================================
+;; Evil Bindings
+;; =============================================================================
+(define-key evil-normal-state-map (kbd "RET") 'save-buffer)
+(define-key evil-normal-state-map (kbd "C-j") 'evil-scroll-down)
+(define-key evil-normal-state-map (kbd "C-k") 'evil-scroll-up)
+
+
 ;; Make ";" behave like ":" in normal mode
 (define-key evil-normal-state-map (kbd ";") 'evil-ex)
 (define-key evil-visual-state-map (kbd ";") 'evil-ex)
@@ -225,15 +223,17 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Yank whole buffer
 (define-key evil-normal-state-map (kbd "gy") (kbd "gg v G y"))
 
-;(setq key-chord-two-keys-delay 0.3)
+(setq key-chord-two-keys-delay 0.2)
 (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+(key-chord-define evil-insert-state-map "Jk" 'evil-normal-state)
+(key-chord-define evil-insert-state-map "JK" 'evil-normal-state)
 (key-chord-mode 1)
 
 (define-key evil-normal-state-map "gh" 'windmove-left)
 (define-key evil-normal-state-map "gj" 'windmove-down)
 (define-key evil-normal-state-map "gk" 'windmove-up)
 (define-key evil-normal-state-map "gl" 'windmove-right)
- 
+
 (add-hook 'neotree-mode-hook
  (lambda ()
    (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter)
@@ -246,14 +246,28 @@ Repeated invocations toggle between the two most recently open buffers."
 	 (define-key evil-normal-state-local-map (kbd "mm") 'neotree-rename-node)
 ))
 
+;; Map ctrl-j/k to up down in ido selections
+(add-hook 'ido-setup-hook
+  (lambda ()
+    (local-unset-key "ESC")
+    (define-key ido-completion-map (kbd "C-j") 'ido-next-match)
+    (define-key ido-completion-map (kbd "C-k") 'ido-prev-match)
+))
+
+
+;; =============================================================================
 ;; UI
+;; =============================================================================
+
 (global-linum-mode t)
+(setq-default truncate-lines t)
+
 (defun linum-format-func (line)
   (let ((w (length (number-to-string (count-lines (point-min) (point-max))))))
      (propertize (format (format "%%%dd " w) line) 'face 'linum)))
 
 (setq linum-format 'linum-format-func)
-;; use customized linum-format: add a addition space after the line number                                                                      
+;; use customized linum-format: add a addition space after the line number
 
 ;; Remember the cursor position of files when reopening them
 (setq save-place-file "~/.emacs.d/saveplace")
@@ -320,18 +334,18 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ; (defun evil-move-point-by-word (dir)
 ;   "Used internally by evil
-;  
+;
 ; A pure-vim emulation of move-word runs slow, but emacs forward-word
 ; does not recognize underscores as word boundaries. This method calls
 ; Emacs native forward-word, and then repeats if it detects it stopped
 ; on an underscore."
 ;   (let ((success (forward-word dir))
 ;         (fn (if (= 1 dir) 'looking-at 'looking-back)))
-;  
+;
 ;     (if (and success (funcall fn "_"))
 ;         (evil-move-point-by-word dir)
 ;       success)))
-;  
+;
 ; (defun evil-forward-word (&optional count)
 ;   "Move by words.
 ; Moves point COUNT words forward or (- COUNT) words backward if
@@ -345,7 +359,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;                 (evil-move-point-by-word dir))
 ;       (setq count (1- count)))
 ;     count))
-;  
+;
 ; (evil-define-union-move evil-move-word (count)
 ;   "Move by words."
 ;   (evil-move-chars "^ \t\r\n[:word:]_" count)
@@ -384,13 +398,13 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ; (defun copy-from-osx ()
 ;     (shell-command-to-string "pbpaste"))
-; 
+;
 ; (defun paste-to-osx (text &optional push)
 ;     (let ((process-connection-type nil))
 ;           (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
 ; 	          (process-send-string proc text)
 ; 		        (process-send-eof proc))))
-; 
+;
 ; (setq interprogram-cut-function 'paste-to-osx)
 ; (setq interprogram-paste-function 'copy-from-osx)
 
@@ -420,13 +434,15 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (defun author-mode ()
   (interactive)
-  (linum-mode)
-  (writeroom-mode)
-  (longlines-mode)
-  (flyspell-mode)
+  (linum-mode -1)
+  (writeroom-mode t)
+  (longlines-mode t)
+  (flyspell-mode t)
+  (turn-off-smartparens-mode)
+  (company-mode -1)
   )
 
-;; I want underscores as part of word in all modes 
+;; I want underscores as part of word in all modes
 (modify-syntax-entry (string-to-char "_") "w" (standard-syntax-table))
 (modify-syntax-entry (string-to-char "_") "w" text-mode-syntax-table)
 (modify-syntax-entry (string-to-char "_") "w" lisp-mode-syntax-table)
@@ -436,12 +452,23 @@ Repeated invocations toggle between the two most recently open buffers."
 (modify-syntax-entry (string-to-char "_") "w" elixir-mode-syntax-table)
 
 
+;; File handling
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
 ;; Space indentation
+(setq-default indent-tabs-mode nil)
 (add-hook 'enh-ruby-mode-hook (lambda () (setq evil-shift-width 2)))
 (add-hook 'ruby-mode-hook (lambda () (setq evil-shift-width 2)))
 (add-hook 'elixir-mode-hook (lambda () (setq evil-shift-width 2)))
 
+;; Play nice with evil-mode in compilation-mode, ie project-ag results
+(add-hook 'compilation-mode-hook '(lambda ()
+                                    (local-unset-key "g")
+                                    (local-unset-key "h")
+                                    (local-unset-key "k")))
 
+;;==============================================================================
+;; Hack "*" to hightlight, but not jump to first match
 (defun my-evil-prepare-word-search (forward symbol)
   "Prepare word search, but do not move yet."
   (interactive (list (prefix-numeric-value current-prefix-arg)
@@ -495,3 +522,5 @@ one more than the current position."
 
 (define-key evil-motion-state-map "*" 'my-evil-prepare-word-search)
 (define-key evil-motion-state-map (kbd "*") 'my-evil-prepare-word-search)
+;; end highlight hack
+;;==============================================================================
