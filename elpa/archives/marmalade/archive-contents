@@ -127,8 +127,8 @@
 	   [(1 4)
 	    nil "Remember buffer positions per-window, not per buffer" single])
  (window-number .
-		[(1 0 1)
-		 nil "Jump to a window by number" single])
+		[(1 0 2)
+		 nil "Select windows by numbers." single])
  (window-margin .
 		[(0 1)
 		 nil "automatic margins for visual-line-mode wrapping" single])
@@ -190,9 +190,9 @@
 	   [(8 0 4)
 	    nil "major mode for editing html templates" single])
  (web .
-      [(0 4 5)
+      [(0 5 1)
        ((dash
-	 (2 3 0))
+	 (2 9 0))
 	(s
 	 (1 5 0)))
        "useful HTTP client" single])
@@ -854,7 +854,7 @@
 	     [(1 1)
 	      nil "Open a shell relative to the working directory" single])
  (shadchen .
-	   [(1 2)
+	   [(1 4)
 	    nil "pattern matching for elisp" single])
  (setup-cygwin .
 	       [(21 0)
@@ -1201,6 +1201,19 @@
  (psgml .
 	[(1 4 1)
 	 nil "Lennart Staflin's Psgml package, with Elisp syntax and sgml-validate fixed for Emacsen >=24." tar])
+ (psci .
+       [(0 0 5)
+	((purescript-mode
+	  (13 10))
+	 (dash
+	  (2 9 0))
+	 (s
+	  (1 9 0))
+	 (f
+	  (0 17 1))
+	 (deferred
+	     (0 3 2)))
+	"Major mode for purescript repl psci" single])
  (ps-ccrypt .
 	    [(1 10)
 	     nil "reading/writing/loading encrypted files" tar])
@@ -1547,9 +1560,9 @@
 	       (0 1)))
 	     "Orgmode integration with the GNOME desktop" single])
  (org-email .
-	    [(2 1)
+	    [(3 0 0)
 	     ((shadchen
-	       (1 1))
+	       (1 2))
 	      (dash
 	       (2 9 0))
 	      (noflet
@@ -1666,7 +1679,7 @@
        [(0 1 1)
 	nil "Easy Python test running in Emacs" single])
  (noflet .
-   [(0 0 14)
+   [(0 0 15)
      nil "locally override functions" single])
  (nodejs-repl .
 	      [(0 0 2 1)
@@ -1868,11 +1881,13 @@
 		 [(0 0 5)
 		  nil "a demonstration elpa package" single])
  (marmalade-client .
-		   [(0 0 9)
+		   [(0 0 11)
 		    ((web
 		      (0 4 2))
 		     (kv
-		      (0 0 19)))
+		      (0 0 19))
+		     (gh
+		      (0 8 0)))
 		    "client for marmalade API from emacs" single])
  (marmalade .
 	    [(0 0 4)
@@ -2628,8 +2643,10 @@
 	       [(0 0 3)
 		nil "Github color theme for GNU Emacs 24" single])
  (github-browse-file .
-		     [(0 3 0)
-		      nil "View the file you're editing on GitHub" single])
+		     [(0 4 0)
+		      ((cl-lib
+			(0 5)))
+		      "View the file you're editing on GitHub" single])
  (gitconfig-mode .
 		 [(0 3)
 		  nil "Major mode for editing .gitconfig files" single])
@@ -2759,6 +2776,9 @@
 		 ((emacs
 		   (24 1)))
 		 "Restore Emacs frame" single])
+ (fooddice .
+	   [(0 1)
+	    nil "Help me I am hungry and dont know what to eat!" single])
  (font-utils .
 	     [(0 7 0)
 	      ((persistent-soft
@@ -3248,7 +3268,7 @@
 	   [(1 4 6)
 	    nil "Screen for Emacsen" single])
  (elpy .
-       [(1 5 1)
+       [(1 6 0)
 	((company
 	  (0 8 2))
 	 (find-file-in-project
@@ -3280,23 +3300,23 @@
 	     [(0 4)
 	      nil "Handy functions for inspecting and comparing package archives" single])
  (elnode .
-	 [(0 9 9 8 7)
+	 [(0 9 9 8 8)
 	  ((web
 	    (0 4 3))
 	   (dash
-	    (1 1 0))
+	    (2 9 0))
 	   (noflet
-      (0 0 7))
+      (0 0 14))
 	   (s
 	    (1 5 0))
 	   (creole
-	    (0 8 14))
+	    (1 0 6))
 	   (fakir
-	    (0 1 6))
+	    (0 1 9))
 	   (db
-	    (0 0 5))
+	    (0 0 6))
 	   (kv
-	    (0 0 17)))
+	    (0 0 19)))
 	  "The Emacs webserver." tar])
  (elixir-mode .
 	      [(1 0 0)
@@ -3310,7 +3330,7 @@
 		     (0 2)))
 		   "Make M-. and M-, work in elisp like they do in slime" single])
  (elisp-indexer .
-		[(0 0 7)
+		[(0 0 8)
 		 nil "indexing utils for emacslisp" single])
  (elisp-depend .
 	       [(1 0 2)
@@ -3562,9 +3582,9 @@
 	   (0 0 6)))
 	 "A PostgreSQL adapter for emacs-db" single])
  (db .
-     [(0 0 6)
+     [(0 0 7)
       ((kv
-	(0 0 11)))
+	(0 0 19)))
       "A database for EmacsLisp" single])
  (dash-functional .
 		  [(1 2 0)
@@ -3628,7 +3648,7 @@
 	      [(0 0 5)
 	       nil "a markup mode for creole" single])
  (creole .
-	 [(1 0 5)
+	 [(1 0 6)
 	  ((noflet
       (0 0 3))
 	   (kv
@@ -4172,9 +4192,11 @@
 		  (1 11 5)))
 		"Space align various Clojure forms" single])
  (alchemist .
-	    [(0 2 0)
+	    [(0 4 1)
 	     ((emacs
-	       (24)))
+	       (24))
+	      (pkg-info
+	       (0 5)))
 	     "Elixir tooling integration into emacs" tar])
  (ahg .
       [(0 99)

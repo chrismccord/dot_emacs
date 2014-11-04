@@ -45,6 +45,7 @@
 (show-paren-mode t)
 (smartparens-global-mode t)
 (show-smartparens-global-mode nil)
+(setq sp-autoescape-string-quote nil)
 ;; Do not highlight paren area
 (setq sp-highlight-pair-overlay nil)
 (setq sp-highlight-wrap-overlay nil)
@@ -143,7 +144,8 @@
 (setq evil-esc-delay 0)
 
 ;; Don't show default text in command bar
-(add-hook 'minibuffer-setup-hook (lambda () (evil-ex-remove-default)))
+;  ** Currently breaks visual range selection, looking for workaround
+;(add-hook 'minibuffer-setup-hook (lambda () (evil-ex-remove-default)))
 
 ;; Make HJKL keys work in special buffers
 (evil-add-hjkl-bindings magit-branch-manager-mode-map 'emacs
@@ -249,7 +251,6 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Map ctrl-j/k to up down in ido selections
 (add-hook 'ido-setup-hook
   (lambda ()
-    (local-unset-key "ESC")
     (define-key ido-completion-map (kbd "C-j") 'ido-next-match)
     (define-key ido-completion-map (kbd "C-k") 'ido-prev-match)
 ))
@@ -302,11 +303,11 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Git Gutter
 ;;(global-git-gutter+-mode 1)
 ;; If you enable global minor mode
-(require 'git-gutter)
-(global-git-gutter-mode t)
+;; (require 'git-gutter)
+;; (global-git-gutter-mode t)
 
-;; If you would like to use git-gutter.el and linum-mode
-(git-gutter:linum-setup)
+;; ;; If you would like to use git-gutter.el and linum-mode
+;; (git-gutter:linum-setup)
 
 (require 'smooth-scrolling)
 (setq smooth-scroll-margin 3)
@@ -330,7 +331,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (my-evil-terminal-cursor-change)
 
 
-(defun change-major-mode-hook () (modify-syntax-entry ?_ "w"))
+;; (defun change-major-mode-hook () (modify-syntax-entry ?_ "w"))
 
 ; (defun evil-move-point-by-word (dir)
 ;   "Used internally by evil
@@ -393,23 +394,9 @@ Repeated invocations toggle between the two most recently open buffers."
     (set (make-variable-buffer-local 'ruby-end-check-statement-modifiers) nil)
     (ruby-end-mode +1)))
 
-;; Use M-w to copy Emacs buffer selection; and Cmd-V to paste outside of Emacs.
-;; Use Cmd-C to copy selection from OSX; and C-y to paste in Emacs
+(load "~/.emacs.d/packages/change-case.el")
 
-; (defun copy-from-osx ()
-;     (shell-command-to-string "pbpaste"))
-;
-; (defun paste-to-osx (text &optional push)
-;     (let ((process-connection-type nil))
-;           (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
-; 	          (process-send-string proc text)
-; 		        (process-send-eof proc))))
-;
-; (setq interprogram-cut-function 'paste-to-osx)
-; (setq interprogram-paste-function 'copy-from-osx)
-
-
- ;;; esc quits
+;;; esc quits
 ;; (define-key evil-normal-state-map (kbd "ESC") 'keyboard-quit)
 ;; (define-key evil-visual-state-map (kbd "ESC") 'keyboard-quit)
 ;; (define-key minibuffer-local-map (kbd "ESC") 'minibuffer-keyboard-quit)
