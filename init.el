@@ -435,6 +435,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (modify-syntax-entry (string-to-char "_") "w" lisp-mode-syntax-table)
 (modify-syntax-entry (string-to-char "_") "w" emacs-lisp-mode-syntax-table)
 (require 'enh-ruby-mode)
+(require 'coffee-mode)
 (modify-syntax-entry (string-to-char "_") "w" enh-ruby-mode-syntax-table)
 (modify-syntax-entry (string-to-char "_") "w" elixir-mode-syntax-table)
 (modify-syntax-entry (string-to-char "_") "w" coffee-mode-syntax-table)
