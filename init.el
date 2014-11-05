@@ -437,6 +437,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (require 'enh-ruby-mode)
 (modify-syntax-entry (string-to-char "_") "w" enh-ruby-mode-syntax-table)
 (modify-syntax-entry (string-to-char "_") "w" elixir-mode-syntax-table)
+(modify-syntax-entry (string-to-char "_") "w" coffee-mode-syntax-table)
 
 
 ;; File handling
@@ -447,6 +448,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (add-hook 'enh-ruby-mode-hook (lambda () (setq evil-shift-width 2)))
 (add-hook 'ruby-mode-hook (lambda () (setq evil-shift-width 2)))
 (add-hook 'elixir-mode-hook (lambda () (setq evil-shift-width 2)))
+(add-hook 'coffee-mode-hook (lambda () (setq evil-shift-width 2)))
 
 ;; Play nice with evil-mode in compilation-mode, ie project-ag results
 (add-hook 'compilation-mode-hook '(lambda ()
