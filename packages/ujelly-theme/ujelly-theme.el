@@ -43,6 +43,20 @@
        `(company-tooltip-common ((,class (:foreground ,ujelly-red-0 :background ,ujelly-grey-2))))
        `(company-tooltip-common-selection ((,class (:foreground ,ujelly-red-0 :background ,ujelly-purple-1))))
        `(company-tooltip-selection ((,class (:background ,ujelly-purple-1))))
+        ;; company-tooltip                  - Face used for the tooltip
+        ;; company-tooltip-selection        - Face used for the selection in the tooltip
+        ;; company-tooltip-search           - Face used for the search string in the tooltip
+        ;; company-tooltip-mouse            - Face used for the tooltip item under the mouse
+        ;; company-tooltip-common           - Face used for the common completion in the tooltip
+        ;; company-tooltip-common-selection - Face used for the selected common completion in the tooltip
+        ;; company-tooltip-annotation       - Face used for the annotation in the tooltip
+        ;; company-scrollbar-fg             - Face used for the tooltip scrollbar thumb
+        ;; company-scrollbar-bg             - Face used for the tooltip scrollbar background
+        ;; company-preview                  - Face used for the completion preview
+        ;; company-preview-common           - Face used for the common part of the completion preview
+        ;; company-preview-search           - Face used for the search string in the completion preview
+        ;; company-echo                     - Face used for completions in the echo area
+        ;; company-echo-common              - Face used for the common part of completions in the echo area
        `(compilation-error ((,class (:foreground ,ujelly-red-0))))
        `(compilation-info ((,class (:foreground ,ujelly-yellow-0))))
        `(compilation-line-number ((,class (:foreground ,ujelly-grey-0))))
