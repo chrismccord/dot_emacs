@@ -1,5 +1,30 @@
 ;;; elixir-smie.el --- Structural syntax support for elixir-mode
 
+;; Copyright 2011-2014 secondplanet
+;;           2013-2014 Samuel Tonini, Matt DeBoard, Andreas Fuchs
+
+;; This file is not a part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; if not, write to the Free Software
+;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+;;; Commentary:
+
+;;  Structural syntax support for elixir-mode
+
+;;; Code:
+
 (require 'smie)
 
 ;; HACK: Patch for Emacs 24.3 smie that fix
@@ -117,7 +142,10 @@
 
 (defvar elixir-smie--operator-regexp
   (rx (or "<<<" ">>>" "^^^" "~~~" "&&&" "|||" "===" "!==" "==" "!=" "<="
-          ">=" "<" ">" "&&" "||" "<>" "++" "--" "//" "/>" "=~" "|>")))
+	  "=" ">=" "<" ">" "&&" "||" "<>" "++" "--" "//" "/>" "=~" "|>")))
+
+(defvar elixir-smie--binary-sequence-regexp
+  (rx (or "<<" ">>")))
 
 (defvar elixir-smie--block-operator-regexp
   (rx "->" (0+ nonl)))
@@ -144,33 +172,34 @@
 
 (defun elixir-smie--semi-ends-match ()
   "Return non-nil if the current line concludes a match block."
-  (save-excursion
-    ;; Warning: Recursion.
-    ;; This is easy though.
+  (when (not (eobp))
+    (save-excursion
+      ;; Warning: Recursion.
+      ;; This is easy though.
 
-    ;; 1. If we're at a blank line, move forward a character. This takes us to
-    ;;    the next line.
-    ;; 2. If we're not at the end of the buffer, call this function again.
-    ;;    (Otherwise, return nil.)
+      ;; 1. If we're at a blank line, move forward a character. This takes us to
+      ;;    the next line.
+      ;; 2. If we're not at the end of the buffer, call this function again.
+      ;;    (Otherwise, return nil.)
 
-    ;; The point here is that we want to treat blank lines as a single semi-
-    ;; colon when it comes to detecting the end of match statements. This could
-    ;; also be handled by a `while' expression or some other looping mechanism.
-    (flet ((self-call ()
-                      (if (< (point) (point-max))
-                          (elixir-smie--semi-ends-match)
-                        nil)))
-      (cond
-       ((and (eolp) (bolp))
-        (forward-char)
-        (self-call))
-       ((looking-at elixir-smie--spaces-til-eol-regexp)
-        (move-beginning-of-line 2)
-        (self-call))
-       ;; And if we're NOT on a blank line, move to the end of the line, and see
-       ;; if we're looking back at a block operator.
-       (t (move-end-of-line 1)
-          (looking-back elixir-smie--block-operator-regexp))))))
+      ;; The point here is that we want to treat blank lines as a single semi-
+      ;; colon when it comes to detecting the end of match statements. This could
+      ;; also be handled by a `while' expression or some other looping mechanism.
+      (cl-flet ((self-call ()
+			   (if (< (point) (point-max))
+			       (elixir-smie--semi-ends-match)
+			     nil)))
+	(cond
+	 ((and (eolp) (bolp))
+	  (forward-char)
+	  (self-call))
+	 ((looking-at elixir-smie--spaces-til-eol-regexp)
+	  (move-beginning-of-line 2)
+	  (self-call))
+	 ;; And if we're NOT on a blank line, move to the end of the line, and see
+	 ;; if we're looking back at a block operator.
+	 (t (move-end-of-line 1)
+	    (looking-back elixir-smie--block-operator-regexp)))))))
 
 (defun elixir-smie--same-line-as-parent (parent-pos child-pos)
   "Return non-nil if `child-pos' is on same line as `parent-pos'."
@@ -186,7 +215,10 @@
    ((and (or (looking-at elixir-smie--comment-regexp)
              (looking-at "[\n#]"))
          (elixir-smie--implicit-semi-p))
-    (if (eolp) (forward-char 1) (forward-comment 1))
+    (when (not (save-excursion
+		 (forward-comment 1)
+		 (eobp)))
+      (if (eolp) (forward-char 1) (forward-comment 1)))
     ;; Note: `elixir-smie--semi-ends-match' will be called when the point is at
     ;; the beginning of a new line. Keep that in mind.
     (if (elixir-smie--semi-ends-match)
@@ -212,6 +244,9 @@
      ((looking-back elixir-smie--block-operator-regexp (- (point) 3) t)
       (goto-char (match-beginning 0))
       "->")
+     ((looking-back elixir-smie--binary-sequence-regexp (- (point) 3) t)
+      (goto-char (match-beginning 0))
+      "OP")
      ((looking-back elixir-smie--operator-regexp (- (point) 3) t)
       (goto-char (match-beginning 0))
       "OP")
@@ -229,23 +264,39 @@
 
 (defun elixir-smie-rules (kind token)
   (pcase (cons kind token)
+    (`(:before . "OP")
+     (when (and (not (smie-rule-hanging-p))
+                (smie-rule-prev-p "OP"))
+       -2))
     (`(:after . "OP")
      (cond
       ((smie-rule-sibling-p) nil)
       ((smie-rule-hanging-p) (smie-rule-parent elixir-smie-indent-basic))
-      (t elixir-smie-indent-basic)))
-
+      (t (smie-rule-parent))))
     (`(:before . "MATCH-STATEMENT-DELIMITER")
      (cond
       ((and (not (smie-rule-sibling-p))
             (smie-rule-hanging-p))
        (smie-rule-parent elixir-smie-indent-basic))))
-
+    (`(:before . "fn")
+     (smie-rule-parent))
+    (`(:before . "end")
+     (smie-rule-parent))
+    ;; Closing paren on the other line
+    (`(:before . "(")
+     (smie-rule-parent))
+    (`(:before . "[")
+     (cond
+      ((smie-rule-hanging-p)
+       (smie-rule-parent))))
+    (`(:after . "[")
+     (cond
+      ((smie-rule-hanging-p)
+       (smie-rule-parent elixir-smie-indent-basic))))
     (`(:before . "->")
      (cond
       ((smie-rule-hanging-p)
        (smie-rule-parent elixir-smie-indent-basic))))
-
     (`(:after . "->")
      (cond
       ;; This first condition is kind of complicated so I'll try to make this
@@ -266,26 +317,26 @@
        (if (and smie--parent (elixir-smie--same-line-as-parent
                               (nth 1 smie--parent)
                               (point)))
-           (smie-rule-parent elixir-smie-indent-basic)))
+           (smie-rule-parent elixir-smie-indent-basic)
+	 elixir-smie-indent-basic))
       ;; Otherwise, if just indent by two.
       ((smie-rule-hanging-p)
-       elixir-smie-indent-basic)))
-
-    ;; Closing paren on the other line
-    (`(:before . "(")
-     (smie-rule-parent))
-
+       (cond
+        ((smie-rule-parent-p "after" "catch" "do" "rescue" "try")
+         elixir-smie-indent-basic)
+        (t
+         (smie-rule-parent elixir-smie-indent-basic))))))
     (`(:before . ";")
      (cond
       ((smie-rule-parent-p "after" "catch" "def" "defmodule" "defp" "do" "else"
                            "fn" "if" "rescue" "try" "unless")
        (smie-rule-parent elixir-smie-indent-basic))))
-
     (`(:after . ";")
      (cond
+      ((smie-rule-parent-p "def")
+       (smie-rule-parent))
       ((smie-rule-parent-p "if")
        (smie-rule-parent))
-
       ((and (smie-rule-parent-p "(")
             (save-excursion
               (goto-char (cadr smie--parent))
@@ -293,3 +344,5 @@
        (smie-rule-parent elixir-smie-indent-basic))))))
 
 (provide 'elixir-smie)
+
+;;; elixir-smie.el ends here

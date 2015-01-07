@@ -8,6 +8,9 @@ Provides font-locking, indentation and navigation support for the
 [Elixir programming language.](http://elixir-lang.org/)
 
 - [Installation](#installation)
+  - [Via package.el](#via-packageel)
+  - [Via el-get](#via-el-get)
+  - [Manual](#manual)
 - [Usage](#usage)
   - [Interactive Commands](#interactive-commands)
   - [Configuration](#configuration)
@@ -20,31 +23,54 @@ Provides font-locking, indentation and navigation support for the
 
 ## Installation
 
-### ELPA
+### Via package.el
 
-elixir-mode is available on the community maintained repository -
-[MELPA](http://stable.melpa.org/). Just run `M-x package-install
-[RET] elixir-mode [RET]` inside your emacs and you're ready to go.
+`package.el` is the built-in package manager in Emacs.
 
-**Please take note of the MELPA URL.** We strive for the most responsible
-release management possible (to the best of our knowledge & abilities). To that
-end, please ensure you are *only* using [MELPA Stable](http://stable.melpa.org)
-to retrieve this package. If you use [regular MELPA](http://melpa.org), you will
-be installing the latest changes to master, not the latest release.
+`Elixir-Mode` is available on the two major community maintained repositories -
+[MELPA STABLE](melpa-stable.milkbox.net) and [MELPA](http://melpa.milkbox.net).
 
-If you're not already using ELPA, check the [emacswiki](http://www.emacswiki.org/emacs/ELPA) page to get
-familiar with it.
+You can install `Elixir-Mode` with the following command:
 
-### Download latest release
+<kbd>M-x package-install [RET] elixir-mode [RET]</kbd>
 
-If you would prefer to install from source, you can download the latest tagged
-release from https://github.com/elixir-lang/emacs-elixir/releases/latest/.
+or by adding this bit of Emacs Lisp code to your Emacs initialization file
+(`.emacs` or `init.el`):
 
-After unzipping either the tarball or zipfile into your desired location,
-add the following in your .emacs file:
+```el
+(unless (package-installed-p 'elixir-mode)
+  (package-install 'elixir-mode))
+```
 
-```lisp
-(add-to-list 'load-path "~/path/to/emacs-elixir/")
+If the installation doesn't work try refreshing the package list:
+
+<kbd>M-x package-refresh-contents [RET]</kbd>
+
+Keep in mind that MELPA packages are built automatically from
+the `master` branch, meaning bugs might creep in there from time to
+time. Never-the-less, installing from MELPA is the recommended way of
+obtaining `Elixir-Mode`, as the `master` branch is normally quite stable and
+"stable" (tagged) builds are released somewhat infrequently.
+
+With the most recent builds of Emacs, you can pin `Elixir-Mode` to always
+use MELPA Stable by adding this to your Emacs initialization:
+
+```el
+(add-to-list 'package-pinned-packages '(elixir-mode . "melpa-stable") t)
+```
+
+### Via el-get
+
+[el-get](https://github.com/dimitri/el-get) is another popular package manager for Emacs. If you're an el-get
+user just do <kbd>M-x el-get-install [RET] elixir-mode [RET]</kbd>.
+
+### Manual
+
+You can install `Elixir-Mode` manually by placing `Elixir-Mode` on your `load-path` and
+`require` ing it. Many people favour the folder `~/.emacs.d/vendor`.
+
+```el
+(add-to-list 'load-path "~/.emacs.d/vendor")
 (require 'elixir-mode)
 ```
 

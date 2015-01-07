@@ -1,14 +1,16 @@
 ;;; elixir-mode.el --- Major mode for editing Elixir files
 
-;; Copyright 2011 secondplanet
-;;           2013 Andreas Fuchs, Samuel Tonini
+;; Copyright 2011-2014 secondplanet
+;;           2013-2014 Samuel Tonini, Matt DeBoard, Andreas Fuchs
 ;; Authors: Humza Yaqoob,
 ;;          Andreas Fuchs <asf@boinkor.net>,
+;;          Matt DeBoard
 ;;          Samuel Tonini <tonini.samuel@gmail.com>
+
 ;; URL: https://github.com/elixir-lang/emacs-elixir
 ;; Created: Mon Nov 7 2011
 ;; Keywords: languages elixir
-;; Version: 2.0.2
+;; Version: 2.2.0
 
 ;; This file is not a part of GNU Emacs.
 
@@ -28,115 +30,26 @@
 
 ;;; Commentary:
 
-;; Provides font-locking, indentation and navigation support
-;; for the Elixir programming language.
-;;
-;;
-;;  Manual Installation:
-;;
-;;   (add-to-list 'load-path "~/path/to/emacs-elixir/")
-;;   (require 'elixir-mode)
-;;
-;;  Interesting variables are:
-;;
-;;      `elixir-compiler-command`
-;;
-;;          Path to the executable <elixirc> command
-;;
-;;      `elixir-iex-command`
-;;
-;;          Path to the executable <iex> command
-;;
-;;      `elixir-mode-cygwin-paths`
-;;
-;;          Use Cygwin style paths on Windows operating systems.
-;;
-;;      `elixir-mode-cygwin-prefix`
-;;
-;;          Cygwin prefix
-;;
-;;  Major commands are:
-;;
-;;       M-x elixir-mode
-;;
-;;           Switches to elixir-mode.
-;;
-;;       M-x elixir-cos-mode
-;;
-;;           Applies compile-on-save minor mode.
-;;
-;;       M-x elixir-mode-compile-file
-;;
-;;           Compile and save current file.
-;;
-;;       M-x elixir-mode-iex
-;;
-;;           Launch <iex> inside Emacs.
-;;           Use "C-u" (universal-argument) to run <iex> with some additional arguments.
-;;
-;;       M-x elixir-mode-eval-on-region
-;;
-;;           Evaluates the Elixir code on the marked region.
-;;           This is bound to "C-c ,r" while in `elixir-mode'.
-;;
-;;       M-x elixir-mode-eval-on-current-line
-;;
-;;           Evaluates the Elixir code on the current line.
-;;           This is bound to "C-c ,c" while in `elixir-mode'.
-;;
-;;       M-x elixir-mode-eval-on-current-buffer
-;;
-;;           Evaluates the Elixir code on the current buffer.
-;;           This is bound to "C-c ,b" while in `elixir-mode'.
-;;
-;;       M-x elixir-mode-string-to-quoted-on-region
-;;
-;;           Get the representation of the expression on the marked region.
-;;           This is bound to "C-c ,a" while in `elixir-mode'.
-;;
-;;       M-x elixir-mode-string-to-quoted-on-current-line
-;;
-;;           Get the representation of the expression on the current line.
-;;           This is bound to "C-c ,l" while in `elixir-mode'.
-;;
-;;       M-x elixir-mode-opengithub
-;;
-;;           Open the GitHub page of the Elixir repository.
-;;
-;;       M-x elixir-mode-open-elixir-home
-;;
-;;           Open the Elixir website.
-;;
-;;       M-x elixir-mode-open-docs-master
-;;
-;;           Open the Elixir documentation for the master.
-;;
-;;       M-x elixir-mode-open-docs-stable
-;;
-;;           Open the Elixir documentation for the latest stable release.
-;;
-;;       M-x elixir-mode-show-version
-;;
-;;           Print `elixir-mode` version.
-;;
-;;   Also check out the customization group
-;;
-;;       M-x customize-group RET elixir RET
-;;
-;;   If you use the customization group to set variables like
-;;   `elixir-compiler-command' or `elixir-iex-command', make sure the path to
-;;   "elixir-mode.el" is present in the `load-path' *before* the
-;;   `custom-set-variables' is executed in your .emacs file.
-;;
+;;  Provides font-locking, indentation and navigation support
+;;  for the Elixir programming language.
 
 ;;; Code:
 
-(require 'comint)       ; for interactive REPL
-(require 'easymenu)     ; for menubar features
+(require 'comint)             ; for interactive REPL
+(require 'easymenu)           ; for menubar features
 
-(require 'elixir-smie)  ; syntax and indentation support
+(require 'elixir-smie)				; syntax and indentation support
+(require 'elixir-deprecated)	; deprecated messages
 
-(defvar elixir-mode--website-url
+(defgroup elixir-mode nil
+  "Provides font-locking, indentation and navigation support
+for the Elixir programming language."
+  :prefix "elixir-mode-"
+  :group 'applications
+  :link '(url-link :tag "Github" "https://github.com/elixir-lang/emacs-elixir")
+  :link '(emacs-commentary-link :tag "Commentary" "elixir-mode"))
+
+(defvar elixir-mqode--website-url
   "http://elixir-lang.org")
 
 (defvar elixir-mode-hook nil)
@@ -407,7 +320,8 @@
     (,(elixir-rx (group identifiers)
                  (one-or-more space)
                  "="
-                 (one-or-more space))
+                 (or (one-or-more space)
+                     (one-or-more "\n")))
      1 font-lock-variable-name-face)
 
     ;; Sigils
@@ -484,6 +398,7 @@ Argument FILE-NAME ."
 (defun elixir-mode-compile-file ()
   "Elixir mode compile and save current file."
   (interactive)
+  (elixir-deprecated-use-alchemist "elixir-mode-compile-file")
   (let ((compiler-output (shell-command-to-string (elixir-mode-command-compile (buffer-file-name)))))
     (when (string= compiler-output "")
       (message "Compiled and saved as %s" (elixir-mode-compiled-file-name)))))
@@ -512,7 +427,8 @@ Optional argument ARGS-P ."
       (set-buffer
        (apply 'make-comint "IEX"
               elixir-iex-command nil switches))))
-  (pop-to-buffer "*IEX*"))
+  (pop-to-buffer "*IEX*")
+  (elixir-deprecated-use-alchemist "elixir-mode-iex"))
 
 ;;;###autoload
 (defun elixir-mode-open-modegithub ()
@@ -594,6 +510,7 @@ just return nil."
 Argument BEG Start of the region.
 Argument END End of the region."
   (interactive (list (point) (mark)))
+  (elixir-deprecated-use-alchemist "elixir-mode-eval-on-region")
   (unless (and beg end)
     (error "The mark is not set now, so there is no region"))
   (let* ((region (buffer-substring-no-properties beg end)))
@@ -602,12 +519,14 @@ Argument END End of the region."
 (defun elixir-mode-eval-on-current-line ()
   "Evaluate the Elixir code on the current line."
   (interactive)
+  (elixir-deprecated-use-alchemist "elixir-mode-eval-on-current-line")
   (let ((current-line (thing-at-point 'line)))
     (elixir-mode--eval-string current-line)))
 
 (defun elixir-mode-eval-on-current-buffer ()
   "Evaluate the Elixir code on the current buffer."
   (interactive)
+  (elixir-deprecated-use-alchemist "elixir-mode-eval-on-current-buffer")
   (let ((current-buffer (buffer-substring-no-properties (point-max) (point-min))))
     (elixir-mode--eval-string current-buffer)))
 
@@ -616,6 +535,7 @@ Argument END End of the region."
 Argument BEG Start of the region.
 Argument END End of the region."
   (interactive (list (point) (mark)))
+  (elixir-deprecated-use-alchemist "elixir-mode-string-to-quoted-on-region")
   (unless (and beg end)
     (error "The mark is not set now, so there is no region"))
   (let ((region (buffer-substring-no-properties beg end)))
@@ -624,6 +544,7 @@ Argument END End of the region."
 (defun elixir-mode-string-to-quoted-on-current-line ()
   "Get the representation of the expression on the current line."
   (interactive)
+  (elixir-deprecated-use-alchemist "elixir-mode-string-to-quoted-on-current-line")
   (let ((current-line (thing-at-point 'line)))
     (elixir-mode--string-to-quoted current-line)))
 
@@ -683,4 +604,5 @@ Argument END End of the region."
   (add-to-list 'auto-mode-alist '("\\.exs\\'" . elixir-mode)))
 
 (provide 'elixir-mode)
+
 ;;; elixir-mode.el ends here

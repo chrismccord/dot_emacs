@@ -31,6 +31,9 @@
 ;(ido-hacks 1)
 
 (projectile-mode t)
+(setq projectile-switch-project-action 'neotree-projectile-action)
+;; Show projectile lists by most recently active
+(setq projectile-sort-order (quote recently-active))
 
 (setq ido-decorations (quote ("\n↪ "     "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
 
@@ -121,6 +124,9 @@
 (setq company-frontends '(company-pseudo-tooltip-on-explicit-action company-echo-metadata-on-explicit-action-frontend company-preview-if-just-one-frontend))
 ;; End TAB cycle hack
 
+(defadvice save-buffer (before save-buffer-always activate)
+  "always save buffer"
+  (set-buffer-modified-p t))
 
 ;; =============================================================================
 ;; Evil
@@ -213,7 +219,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; =============================================================================
 ;; Evil Bindings
 ;; =============================================================================
-(define-key evil-normal-state-map (kbd "RET") 'save-buffer)
+;; (define-key evil-normal-state-map (kbd "RET") 'save-buffer)
 (define-key evil-normal-state-map (kbd "C-j") 'evil-scroll-down)
 (define-key evil-normal-state-map (kbd "C-k") 'evil-scroll-up)
 
@@ -226,7 +232,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Yank whole buffer
 (define-key evil-normal-state-map (kbd "gy") (kbd "gg v G y"))
 
-(setq key-chord-two-keys-delay 0.2)
+(setq key-chord-two-keys-delay 0.35)
 (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
 (key-chord-define evil-insert-state-map "Jk" 'evil-normal-state)
 (key-chord-define evil-insert-state-map "JK" 'evil-normal-state)
@@ -409,7 +415,8 @@ Repeated invocations toggle between the two most recently open buffers."
     (ruby-end-mode +1)))
 
 (load "~/.emacs.d/packages/change-case.el")
-
+;; (add-to-list 'load-path "~/.emacs.d/packages/alchemist/")
+;; (require 'alchemist)
 ;;; esc quits
 ;; (define-key evil-normal-state-map (kbd "ESC") 'keyboard-quit)
 ;; (define-key evil-visual-state-map (kbd "ESC") 'keyboard-quit)
@@ -448,11 +455,13 @@ Repeated invocations toggle between the two most recently open buffers."
 (modify-syntax-entry (string-to-char "_") "w" text-mode-syntax-table)
 (modify-syntax-entry (string-to-char "_") "w" lisp-mode-syntax-table)
 (modify-syntax-entry (string-to-char "_") "w" emacs-lisp-mode-syntax-table)
-(require 'enh-ruby-mode)
+;; (require 'enh-ruby-mode)
+(require 'ruby-mode)
 (require 'coffee-mode)
-(modify-syntax-entry (string-to-char "_") "w" enh-ruby-mode-syntax-table)
+(modify-syntax-entry (string-to-char "_") "w" ruby-mode-syntax-table)
 (modify-syntax-entry (string-to-char "_") "w" elixir-mode-syntax-table)
 (modify-syntax-entry (string-to-char "_") "w" coffee-mode-syntax-table)
+
 
 
 ;; File handling
@@ -460,11 +469,12 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; Space indentation - I want tab as two spaces everywhere
 (setq-default indent-tabs-mode nil)
-(add-hook 'enh-ruby-mode-hook (lambda () (setq evil-shift-width 2)))
+;; (add-hook 'enh-ruby-mode-hook (lambda () (setq evil-shift-width 2)))
 (add-hook 'ruby-mode-hook (lambda () (setq evil-shift-width 2)))
 (add-hook 'elixir-mode-hook (lambda () (setq evil-shift-width 2)))
 (add-hook 'coffee-mode-hook (lambda () (setq evil-shift-width 2)))
 (add-hook 'haml-mode-hook (lambda () (setq evil-shift-width 2)))
+(add-hook 'html-mode-hook (lambda () (setq evil-shift-width 2)))
 
 
 ;; Play nice with evil-mode in compilation-mode, ie project-ag results

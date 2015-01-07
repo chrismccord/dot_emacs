@@ -30,7 +30,7 @@ task 'info' do
   system "#{CASK} exec #{EMACS} --version | head -1"
 end
 
-desc "Run the test suite"
+desc "Run test suite"
 task "test" do
   process_info "Install package dependencies"
   say ""
@@ -43,6 +43,54 @@ task "test" do
   system "#{CASK} exec ert-runner"
 
   exit_when_failed!("Test suite failed!\n")
+end
+
+desc "Run test suite with Emacs without GUI window"
+task "test-no-gui" do
+  process_info "Install package dependencies"
+  say ""
+  say "#{indent(3)}Command: ", :yellow, false
+  sh "cask install"
+  say ""
+
+  process_info "Run test suite with --no-win"
+  say ""
+  system "#{CASK} exec ert-runner --no-win"
+
+  print_when_success("Test suite success\n")
+  exit_when_failed!("Test suite failed!\n")
+end
+
+namespace :testing do
+  desc "Run indentation test suite"
+  task "indentation" do
+    process_info "Install package dependencies"
+    say ""
+    say "#{indent(3)}Command: ", :yellow, false
+    sh "cask install"
+    say ""
+
+    process_info "Run test suite"
+    say ""
+    system "#{CASK} exec ert-runner -t indentation"
+
+    exit_when_failed!("Test suite failed!\n")
+  end
+
+  desc "Run font highlighting test suite"
+  task "fontification" do
+    process_info "Install package dependencies"
+    say ""
+    say "#{indent(3)}Command: ", :yellow, false
+    sh "cask install"
+    say ""
+
+    process_info "Run test suite"
+    say ""
+    system "#{CASK} exec ert-runner -t fontification,syntax-table"
+
+    exit_when_failed!("Test suite failed!\n")
+  end
 end
 
 def git_changes(version, version_tag)
@@ -60,6 +108,12 @@ def exit_when_failed!(message)
   if $?.exitstatus != 0
     warning(message)
     exit(1)
+  end
+end
+
+def print_when_success(message)
+  if $?.exitstatus == 0
+    info(message)
   end
 end
 
@@ -88,7 +142,7 @@ def say(message, type=:white, newline=true)
 end
 
 def process_info(message)
-  puts "#{ansi[:on_green]}#{ansi[:red]}#{message}#{ansi[:ending]}#{ansi[:ending]}"
+  puts "#{ansi[:bold]}#{ansi[:green]}#{message}#{ansi[:ending]}#{ansi[:ending]}"
 end
 
 def info(message)
