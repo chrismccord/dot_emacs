@@ -31,7 +31,9 @@
 ;(ido-hacks 1)
 
 (projectile-mode t)
-(setq projectile-switch-project-action 'neotree-projectile-action)
+
+
+
 ;; Show projectile lists by most recently active
 (setq projectile-sort-order (quote recently-active))
 
@@ -232,11 +234,28 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Yank whole buffer
 (define-key evil-normal-state-map (kbd "gy") (kbd "gg v G y"))
 
-(setq key-chord-two-keys-delay 0.35)
-(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
-(key-chord-define evil-insert-state-map "Jk" 'evil-normal-state)
-(key-chord-define evil-insert-state-map "JK" 'evil-normal-state)
+(setq key-chord-two-keys-delay 0.075)
+;; (key-chord-define evil-insert-state-map "Jk" 'evil-normal-state)
+;; (key-chord-define evil-insert-state-map "JK" 'evil-normal-state)
 (key-chord-mode 1)
+(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+
+(define-key evil-insert-state-map "j" #'cofi/maybe-exit)
+(evil-define-command cofi/maybe-exit ()
+  :repeat change
+  (interactive)
+  (let ((modified (buffer-modified-p)))
+    (insert "j")
+    (let ((evt (read-event (format "" ?k)
+               nil 0.5)))
+      (cond
+       ((null evt) (message ""))
+       ((and (integerp evt) (char-equal evt ?k))
+         (delete-char -1)
+         (set-buffer-modified-p modified)
+         (push 'escape unread-command-events))
+       (t (setq unread-command-events (append unread-command-events
+                          (list evt))))))))
 
 (define-key evil-normal-state-map "gh" 'windmove-left)
 (define-key evil-normal-state-map "gj" 'windmove-down)

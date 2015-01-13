@@ -1,10 +1,9 @@
 ;;; neotree-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-
+(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads (neotree-dir neotree-hide neotree-show neotree-toggle
-;;;;;;  neotree-find) "neotree" "neotree.el" (21573 31007 0 0))
+;;;### (autoloads nil "neotree" "neotree.el" (21683 57534 0 0))
 ;;; Generated autoloads from neotree.el
 
 (autoload 'neotree-find "neotree" "\
@@ -12,6 +11,17 @@ Quick select node which specified PATH in NeoTree.
 If path is nil and no buffer file name, then use DEFAULT-PATH,
 
 \(fn &optional PATH DEFAULT-PATH)" t nil)
+
+(autoload 'neotree-projectile-action "neotree" "\
+Integration with `Projectile'.
+
+Usage:
+    (setq projectile-switch-project-action 'neotree-projectile-action).
+
+When running `projectile-switch-project' (C-c p p), `neotree' will change root
+automatically.
+
+\(fn)" t nil)
 
 (autoload 'neotree-toggle "neotree" "\
 Toggle show the NeoTree window.
@@ -38,16 +48,14 @@ Show the NeoTree window.")
 
 ;;;***
 
-;;;### (autoloads nil nil ("neotree-pkg.el") (21573 31007 259059
+;;;### (autoloads nil nil ("neotree-pkg.el") (21683 57534 411649
 ;;;;;;  0))
 
 ;;;***
 
-(provide 'neotree-autoloads)
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
 ;; End:
 ;;; neotree-autoloads.el ends here
