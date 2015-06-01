@@ -1,7 +1,7 @@
 ;;; elixir-mode.el --- Major mode for editing Elixir files
 
-;; Copyright 2011-2014 secondplanet
-;;           2013-2014 Samuel Tonini, Matt DeBoard, Andreas Fuchs
+;; Copyright 2011-2015 secondplanet
+;;           2013-2015 Samuel Tonini, Matt DeBoard, Andreas Fuchs
 ;; Authors: Humza Yaqoob,
 ;;          Andreas Fuchs <asf@boinkor.net>,
 ;;          Matt DeBoard
@@ -10,7 +10,7 @@
 ;; URL: https://github.com/elixir-lang/emacs-elixir
 ;; Created: Mon Nov 7 2011
 ;; Keywords: languages elixir
-;; Version: 2.2.0
+;; Version: 2.3.0-cvs
 
 ;; This file is not a part of GNU Emacs.
 
@@ -185,7 +185,9 @@ for the Elixir programming language."
     `(
       (atoms . ,(rx ":"
                     (or
-                     (one-or-more (any "a-z" "A-Z" "_" "\"" "'"))
+                     (and
+                      (any "a-z" "A-Z" "_" "\"" "'")
+                      (zero-or-more (any "a-z" "A-Z" "0-9" "_" "\"" "'")))
                      (and "\"" (one-or-more (not (any "\""))) "\"")
                      (and "'" (one-or-more (not (any "'"))) "'"))))
       (builtin . ,(rx symbol-start
@@ -199,25 +201,6 @@ for the Elixir programming language."
                                       "defexception" "defstruct" "defimpl"
                                       "defcallback")
                                   symbol-end))
-      (builtin-modules . ,(rx symbol-start
-                              (or "Agent" "Application" "Atom" "Base"
-                                  "Behaviour" "Bitwise" "Builtin" "Code" "Dict"
-                                  "EEx" "Elixir" "Enum" "ExUnit" "Exception"
-                                  "File" "File.Stat" "File.Stream" "Float"
-                                  "Function" "GenEvent" "GenServer" "GenTCP"
-                                  "HashDict" "HashSet" "IO" "IO.ANSI"
-                                  "IO.Stream" "Inspect.Algebra" "Inspect.Opts"
-                                  "Integer" "Kernel" "Kernel.ParallelCompiler"
-                                  "Kernel.ParallelRequire" "Kernel.SpecialForms"
-                                  "Kernel.Typespec" "Keyword" "List" "Macro"
-                                  "Macro.Env" "Map" "Math" "Module" "Node"
-                                  "OptionParser" "OrdDict" "Path" "Port"
-                                  "Process" "Protocol" "Range" "Record" "Regex"
-                                  "Set" "Stream" "String" "StringIO"
-                                  "Supervisor" "Supervisor.Spec" "System" "Task"
-                                  "Task.Supervisor" "Tuple" "URI"
-                                  "UnboundMethod" "Version")
-                              symbol-end))
       (builtin-namespace . ,(rx symbol-start
                                 (or "import" "require" "use" "alias")
                                 symbol-end))
@@ -227,8 +210,8 @@ for the Elixir programming language."
                          anything
                          symbol-end))
       (function-declaration . ,(rx symbol-start
-                       (or "def" "defp")
-                       symbol-end))
+                                   (or "def" "defp")
+                                   symbol-end))
       ;; Match `@doc' or `@moduledoc' syntax, with or without triple quotes.
       (heredocs . ,(rx symbol-start
                        (or "@doc" "@moduledoc" "~s")
@@ -236,7 +219,7 @@ for the Elixir programming language."
       ;; The first character of an identifier must be a letter or an underscore.
       ;; After that, they may contain any alphanumeric character + underscore.
       ;; Additionally, the final character may be either `?' or `!'.
-      (identifiers . ,(rx (one-or-more (any "A-Z" "a-z""_"))
+      (identifiers . ,(rx (one-or-more (any "A-Z" "a-z" "_"))
                           (zero-or-more (any "A-Z" "a-z" "0-9" "_"))
                           (optional (or "?" "!"))))
       (keyword . ,(rx symbol-start
@@ -245,19 +228,20 @@ for the Elixir programming language."
       (keyword-operator . ,(rx symbol-start
                                (or "not" "and" "or" "when" "in")
                                symbol-end))
-      ;; Module and submodule names start with upper case letter or `_'. This
-      ;; can then be followed by any combination of alphanumeric chars + `_'.
+      ;; Module and submodule names start with upper case letter. This
+      ;; can then be followed by any combination of alphanumeric chars.
       ;; In turn, this can be followed by a `.' which begins the notation of
       ;; a submodule, which follows the same naming pattern of the module.
       ;; Finally, like other identifiers, it can be terminated with either `?'
       ;; or `!'.
       (module-names . ,(rx symbol-start
-                           (one-or-more (any "A-Z" "_"))
+                           (optional "%")
+                           (one-or-more (any "A-Z"))
                            (zero-or-more (any "A-Z" "a-z" "_" "0-9"))
                            (zero-or-more
                             (and "."
                                  (one-or-more (any "A-Z" "_"))
-                                  (zero-or-more (any "A-Z" "a-z" "_" "0-9"))))
+                                 (zero-or-more (any "A-Z" "a-z" "_" "0-9"))))
                            (optional (or "!" "?"))
                            symbol-end))
       (operators1 . ,(rx symbol-start
@@ -294,12 +278,6 @@ for the Elixir programming language."
     ;; String interpolation
     (elixir-match-interpolation 0 font-lock-variable-name-face t)
 
-    ;; Module-defining & namespace builtins
-    (,(elixir-rx (or builtin-declaration builtin-namespace)
-                 space
-                 (group module-names))
-     1 font-lock-type-face)
-
     ;; Module attributes
     (,(elixir-rx (group (or heredocs
                             (and "@" (1+ identifiers)))))
@@ -328,6 +306,33 @@ for the Elixir programming language."
     (,(elixir-rx (group sigils))
      1 font-lock-builtin-face)
 
+    ;; Sigil patterns. Elixir has support for eight different sigil delimiters.
+    ;; This isn't a very DRY approach here but it gets the job done.
+    (,(elixir-rx sigils
+                 (and "/" (group (one-or-more (not (any "/")))) "/"))
+     1 font-lock-string-face)
+    (,(elixir-rx sigils
+                 (and "[" (group (one-or-more (not (any "]")))) "]"))
+     1 font-lock-string-face)
+    (,(elixir-rx sigils
+                 (and "{" (group (one-or-more (not (any "}")))) "}"))
+     1 font-lock-string-face)
+    (,(elixir-rx sigils
+                 (and "(" (group (one-or-more (not (any ")")))) ")"))
+     1 font-lock-string-face)
+    (,(elixir-rx sigils
+                 (and "|" (group (one-or-more (not (any "|")))) "|"))
+     1 font-lock-string-face)
+    (,(elixir-rx sigils
+                 (and "\"" (group (one-or-more (not (any "\"")))) "\""))
+     1 font-lock-string-face)
+    (,(elixir-rx sigils
+                 (and "'" (group (one-or-more (not (any "'")))) "'"))
+     1 font-lock-string-face)
+    (,(elixir-rx sigils
+                 (and "<" (group (one-or-more (not (any ">")))) ">"))
+     1 font-lock-string-face)
+
     ;; Regex patterns. Elixir has support for eight different regex delimiters.
     ;; This isn't a very DRY approach here but it gets the job done.
     (,(elixir-rx "~r"
@@ -355,6 +360,10 @@ for the Elixir programming language."
                  (and "<" (group (one-or-more (not (any ">")))) ">"))
      1 font-lock-string-face)
 
+    ;; Modules
+    (,(elixir-rx (group module-names))
+     1 font-lock-type-face)
+
     ;; Atoms and singleton-like words like true/false/nil.
     (,(elixir-rx (group atoms))
      1 elixir-atom-face)
@@ -363,8 +372,8 @@ for the Elixir programming language."
     (,(elixir-rx (group (and (one-or-more identifiers) ":")))
      1 elixir-atom-face)
 
-    ;; Built-in modules and pseudovariables
-    (,(elixir-rx (group (or builtin-modules pseudo-var)))
+    ;; Pseudovariables
+    (,(elixir-rx (group pseudo-var))
      1 font-lock-constant-face)
 
     ;; Code points
@@ -405,8 +414,7 @@ Argument FILE-NAME ."
 
 (defun elixir-quoted--initialize-buffer (quoted)
   (pop-to-buffer elixir-quoted--buffer-name)
-  (setq buffer-undo-list nil) ; Get rid of undo information from
-                              ; previous expansions
+  (setq buffer-undo-list nil) ; Get rid of undo information from previous expansions
   (let ((inhibit-read-only t)
         (buffer-undo-list t)) ; Ignore undo information
     (erase-buffer)
@@ -504,6 +512,17 @@ just return nil."
 (defun elixir-mode--string-to-quoted (string)
   (let* ((output (elixir-mode--execute-elixir-with-code-string-to-quoted string)))
     (elixir-quoted--initialize-buffer output)))
+
+(defun elixir-mode-fill-doc-string ()
+  (interactive)
+  (save-excursion
+    (re-search-backward "@\\(?:module\\)?doc +\"\"\"" nil t)
+    (re-search-forward "\"\"\"" nil t)
+    (set-mark (point))
+    (re-search-forward "\"\"\"" nil t)
+    (re-search-backward "^ *\"\"\"" nil t)
+    (backward-char)
+    (fill-region (point) (mark))))
 
 (defun elixir-mode-eval-on-region (beg end)
   "Evaluate the Elixir code on the marked region.

@@ -1,4 +1,24 @@
-# Changelog
+## v2.2.2 - 2015/05/22
+* [#193](https://github.com/elixir-lang/emacs-elixir/pull/193) - fix wrong indentation on empty line between existing code
+* [#195](https://github.com/elixir-lang/emacs-elixir/pull/195) - highlighting of capitalized modules when used as structs
+* [#192](https://github.com/elixir-lang/emacs-elixir/pull/192) - Fix (error "Lisp nesting exceeds `max-lisp-eval-depth'") which crashes correct indentation
+* [#190](https://github.com/elixir-lang/emacs-elixir/pull/190) - correct indentation for multiclause anonymous functions
+* [#189](https://github.com/elixir-lang/emacs-elixir/pull/189) - Modify indentation rules for one-line functions ending with bitstrings.
+* [#179](https://github.com/elixir-lang/emacs-elixir/pull/179) - Modify syntax highlighting so there is no differentiating between built-in and user-defined modules.
+* [#188](https://github.com/elixir-lang/emacs-elixir/pull/188) - Fix changelog.
+* [#187](https://github.com/elixir-lang/emacs-elixir/pull/187) - Add unresolved test case.
+* [#178](https://github.com/elixir-lang/emacs-elixir/pull/178) - Factor out `cask install` as its own task in Rakefile
+
+## v2.2.1 - 2015/05/19
+* [#186](https://github.com/elixir-lang/emacs-elixir/pull/186) - Remove undocumented failing tests.
+* [#182](https://github.com/elixir-lang/emacs-elixir/pull/182) - Remove redundant local-pair tip for smartparens users
+* [#183](https://github.com/elixir-lang/emacs-elixir/pull/183) - Fix typos in README.
+* [#176](https://github.com/elixir-lang/emacs-elixir/pull/176) - Highlight digits in atoms
+* [#173](https://github.com/elixir-lang/emacs-elixir/pull/173) - Add function to apply `fill-region` in doc strings
+* [#175](https://github.com/elixir-lang/emacs-elixir/pull/175) - Add tips for smartparens users
+* [#177](https://github.com/elixir-lang/emacs-elixir/pull/177) - Prefer Emacs over emacs.
+* [#141](https://github.com/elixir-lang/emacs-elixir/pull/141) - Add documentation line explaining how to edit Elixir templates.
+* [Syntax Highlighting] Modules don't start with underscore. This fix corrects the fontification of private function.
 
 ## v2.2.0 2014/12/31
 

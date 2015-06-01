@@ -27,10 +27,10 @@ Provides font-locking, indentation and navigation support for the
 
 `package.el` is the built-in package manager in Emacs.
 
-`Elixir-Mode` is available on the two major community maintained repositories -
+`elixir-mode` is available on the two major community maintained repositories -
 [MELPA STABLE](melpa-stable.milkbox.net) and [MELPA](http://melpa.milkbox.net).
 
-You can install `Elixir-Mode` with the following command:
+You can install `elixir-mode` with the following command:
 
 <kbd>M-x package-install [RET] elixir-mode [RET]</kbd>
 
@@ -223,9 +223,26 @@ experience, you can add the following to your `elixir-mode-hook`:
                (ruby-end-mode +1)))
 ```
 
+Also, if you use [smartparens](https://github.com/Fuco1/smartparens) you can
+piggyback on some of its functionality for dealing with Ruby's `do .. end`
+blocks. A sample configuration would be:
+
+```lisp
+(sp-with-modes '(elixir-mode)
+  (sp-local-pair "fn" "end"
+		 :when '(("SPC" "RET"))
+		 :actions '(insert navigate))
+  (sp-local-pair "do" "end"
+		 :when '(("SPC" "RET"))
+		 :post-handlers '(sp-ruby-def-post-handler)
+		 :actions '(insert navigate)))
+```
+
 ## Elixir Tooling Integration
 
-If you looking for elixir tooling integration for emacs, check: [alchemist.el](https://github.com/tonini/alchemist.el)
+If you looking for elixir tooling integration for Emacs, check: [alchemist.el](https://github.com/tonini/alchemist.el)
+
+You can use [web-mode.el](http://web-mode.org) to edit elixir templates (eex files).
 
 ## History
 
