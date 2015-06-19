@@ -437,7 +437,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Custom Packages
 ;; =============================================================================
 
-(load "~/.emacs.d/packages/ujelly-theme/ujelly-theme.el")
+(load "~/.emacs.d/vendor/ujelly-theme/ujelly-theme.el")
 (load-theme 'ujelly)
 
 ; (let ((bg (face-attribute 'default :background)))
@@ -450,14 +450,12 @@ Repeated invocations toggle between the two most recently open buffers."
 ;     `(company-tooltip-selection ((t (:background "#363636"))))))
 
 
-(add-to-list 'load-path "~/.emacs.d/packages/pbcopy/")
 (require 'pbcopy)
 (turn-on-pbcopy)
 
-(add-to-list 'load-path "~/.emacs.d/packages/longlines/")
+(add-to-list 'load-path "~/.emacs.d/vendor/longlines/")
 (require 'longlines)
 
-;; (add-to-list 'load-path "~/.emacs.d/packages/emacs-elixir/")
 (require 'elixir-mode)
 (require 'alchemist)
 ;; (add-to-list 'elixir-mode-hook
@@ -467,9 +465,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;     (set (make-variable-buffer-local 'ruby-end-check-statement-modifiers) nil)
 ;;     (ruby-end-mode +1)))
 
-(load "~/.emacs.d/packages/change-case.el")
-;; (add-to-list 'load-path "~/.emacs.d/packages/alchemist.el/")
-;; (require 'alchemist)
+(load "~/.emacs.d/vendor/change-case.el")
 
 ;;; esc quits
 ;; (define-key evil-normal-state-map (kbd "ESC") 'keyboard-quit)
