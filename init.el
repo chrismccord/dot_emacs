@@ -84,13 +84,25 @@
 ;;==============================================================================
 ;; Autocomplete with company-mode
 ;;==============================================================================
+
+(add-to-list 'load-path "~/.emacs.d/packages/emacs-elixir/")
+(require 'elixir-mode)
+
+(add-to-list 'load-path "~/.emacs.d/packages/alchemist.el/")
+(require 'alchemist)
+
+(add-to-list 'load-path "~/.emacs.d/packages/company-mode/")
+(require 'company)
 (global-company-mode t)
+
+
 (setq company-tooltip-limit 12)                      ; bigger popup window
 (setq company-idle-delay .1)                         ; decrease delay before autocompletion popup shows
 (setq company-echo-delay 0)                          ; remove annoying blinking
 (setq company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
-(setq company-dabbrev-downcase nil)                  ; Do not convert to lowercase
+(setq company-dabbrev-downcase nil)                  ; do not convert to lowercase
 (setq company-selection-wrap-around t)               ; continue from top when reaching bottom
+
 (eval-after-load 'company
   '(add-to-list 'company-backends 'company-inf-ruby))
 ;; Hack to trigger candidate list on first TAB, then cycle through candiates with TAB
@@ -476,8 +488,6 @@ Repeated invocations toggle between the two most recently open buffers."
 (add-to-list 'load-path "~/.emacs.d/packages/longlines/")
 (require 'longlines)
 
-(add-to-list 'load-path "~/.emacs.d/packages/emacs-elixir/")
-(require 'elixir-mode)
 ;; (add-to-list 'elixir-mode-hook
 ;;   (defun auto-activate-ruby-end-mode-for-elixir-mode ()
 ;;     (set (make-variable-buffer-local 'ruby-end-expand-keywords-before-re)
@@ -486,8 +496,6 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;     (ruby-end-mode +1)))
 
 (load "~/.emacs.d/packages/change-case.el")
-;; (add-to-list 'load-path "~/.emacs.d/packages/alchemist.el/")
-;; (require 'alchemist)
 
 ;;; esc quits
 ;; (define-key evil-normal-state-map (kbd "ESC") 'keyboard-quit)
@@ -560,7 +568,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (add-hook 'elixir-mode-hook (lambda ()
                             (setq evil-shift-width 2)
-                            (setq tab-width 2)))
+                            (setq tab-width 2)
+                            ))
 
 (add-hook 'coffee-mode-hook (lambda ()
                             (setq evil-shift-width 2)
@@ -572,7 +581,9 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (add-hook 'html-mode-hook (lambda ()
                             (setq evil-shift-width 2)
-                            (setq tab-width 2)))
+                            (setq tab-width 2)
+                            (emmet-mode)
+                            ))
 
 
 ;; Play nice with evil-mode in compilation-mode, ie project-ag results
