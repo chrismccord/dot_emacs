@@ -22,3 +22,4 @@
 (depends-on "flx-ido")
 (depends-on "neotree")
 (depends-on "evil-nerd-commenter")
+(depends-on "ag")
