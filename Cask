@@ -23,3 +23,6 @@
 (depends-on "neotree")
 (depends-on "evil-nerd-commenter")
 (depends-on "ag")
+(depends-on "magit")
+(depends-on "browse-at-remote")
+(depends-on "writeroom-mode")
