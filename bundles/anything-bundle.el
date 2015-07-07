@@ -166,7 +166,7 @@
   ; "gn" 'git-gutter+:next-hunk
   ; "gr" 'git-gutter+:revert-hunk
   "gb" 'mo-git-blame-current
-  "gl" 'magit-log
+  "gL" 'magit-log
   "gs" 'magit-status
   "w"  'kill-buffer
   "nn" 'neotree-toggle
