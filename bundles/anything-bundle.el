@@ -637,6 +637,13 @@ one more than the current position."
       :back "^~~~$")))
 
   (mmm-add-classes
+    '((markdown-elixirp
+      :submode elixir-mode
+      :face mmm-declaration-submode-face
+      :front "^```elixir$"
+      :back "^```$")))
+
+  (mmm-add-classes
     '((markdown-jsp
       :submode js-mode
       :face mmm-declaration-submode-face

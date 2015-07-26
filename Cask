@@ -27,3 +27,4 @@
 (depends-on "browse-at-remote")
 (depends-on "writeroom-mode")
 (depends-on "alchemist")
+(depends-on "markdown-mode")
