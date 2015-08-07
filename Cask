@@ -28,3 +28,4 @@
 (depends-on "writeroom-mode")
 (depends-on "alchemist")
 (depends-on "markdown-mode")
+(depends-on "emmet-mode")
