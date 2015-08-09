@@ -218,6 +218,10 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (setq key-chord-two-keys-delay 0.075)
 (key-chord-mode 1)
+;; Hack to fix eldoc errors when `jk` is triggered
+(eldoc-mode 1)
+(eldoc-mode 0)
+;; end hack
 (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
 (key-chord-define evil-insert-state-map "JK" 'evil-normal-state)
 (key-chord-define evil-insert-state-map "Jk" 'evil-normal-state)
