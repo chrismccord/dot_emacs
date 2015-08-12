@@ -537,6 +537,14 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; Space indentation - I want tab as two spaces everywhere
 (setq-default indent-tabs-mode nil)
+(setq-default indent-line-function 2)
+(setq-default tab-width 2)
+(setq-default c-basic-offset 2)
+(setq-default css-indent-offset 2)
+(setq-default lisp-indent-offset 2)
+(setq-default sgml-basic-offset 2)
+(setq-default nxml-child-indent 2)
+
 ;; (add-hook 'enh-ruby-mode-hook (lambda () (setq evil-shift-width 2)))
 (add-hook 'ruby-mode-hook (lambda ()
                             (setq evil-shift-width 2)
@@ -555,9 +563,14 @@ Repeated invocations toggle between the two most recently open buffers."
                             (setq tab-width 2)))
 
 (add-hook 'html-mode-hook (lambda ()
+                            (emmet-mode t)
+                            (sgml-mode 0)
                             (setq evil-shift-width 2)
                             (setq tab-width 2)))
 
+(add-hook 'css-mode-hook (lambda ()
+                            (setq evil-shift-width 2)
+                            (setq tab-width 2)))
 
 ;; Play nice with evil-mode in compilation-mode, ie project-ag results
 (add-hook 'compilation-mode-hook '(lambda ()
