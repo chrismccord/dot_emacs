@@ -7,7 +7,7 @@ This is a nearly wholesale clone of [my vim config](https://github.com/chrismcco
 ## Setup
 
 ```console
-$ git git@github.com:chrismccord/dot_emacs.git ~/.emacs.d
+$ git clone git@github.com:chrismccord/dot_emacs.git ~/.emacs.d
 $ cd ~/.emacs.d
 $ brew install cask
 $ cask install
