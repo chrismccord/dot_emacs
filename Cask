@@ -29,3 +29,4 @@
 (depends-on "alchemist")
 (depends-on "markdown-mode")
 (depends-on "emmet-mode")
+(depends-on "gist")
