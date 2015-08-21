@@ -10,9 +10,10 @@
 
 (smex-initialize)
 ;(ido-hacks 1)
-
+(require 'projectile)
+(setq projectile-enable-caching t)
+(setq projectile-globally-ignored-directories (append '("node_modules" ".svn") projectile-globally-ignored-directories))
 (projectile-mode t)
-
 ;; Show projectile lists by most recently active
 (setq projectile-sort-order (quote recently-active))
 
