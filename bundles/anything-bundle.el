@@ -113,6 +113,10 @@
 ;; =============================================================================
 ;; Evil
 ;; =============================================================================
+
+(load "~/.emacs.d/vendor/osx-clipboard-mode/osx-clipboard.el")
+(osx-clipboard-mode +1)
+
 (require 'evil)
 (evil-mode 1)
 (global-evil-visualstar-mode 1)
@@ -149,6 +153,9 @@
 (evil-add-hjkl-bindings magit-commit-mode-map 'emacs)
 (evil-add-hjkl-bindings occur-mode 'emacs)
 
+
+(evil-set-initial-state 'git-commit-mode 'normal)
+
 (setq evil-want-C-i-jump t)
 (setq evil-want-C-u-scroll t)
 
@@ -178,6 +185,7 @@
   "gh" 'windmove-left
   "vs" 'split-window-right
   "hs" 'split-window-below
+  "s" 'ispell-word
   "x" 'smex)
 
 ;; =============================================================================
@@ -455,9 +463,6 @@ Repeated invocations toggle between the two most recently open buffers."
 ;     `(company-tooltip-selection ((t (:background "#363636"))))))
 
 
-(require 'pbcopy)
-(turn-on-pbcopy)
-
 (add-to-list 'load-path "~/.emacs.d/vendor/longlines/")
 (require 'longlines)
 
@@ -639,66 +644,67 @@ one more than the current position."
 
 
 ;; Enable syntax highlighting in markdown
-(require 'mmm-mode)
-  (mmm-add-classes
-    '((markdown-rubyp
-      :submode ruby-mode
-      :face mmm-declaration-submode-face
-      :front "^\{:language=\"ruby\"\}[\n\r]+~~~"
-      :back "^~~~$")))
+;; (require 'mmm-mode)
+;;   (mmm-add-classes
+;;     '((markdown-rubyp
+;;       :submode ruby-mode
+;;       :face mmm-declaration-submode-face
+;;       :front "^\{:language=\"ruby\"\}[\n\r]+~~~"
+;;       :back "^~~~$")))
 
-  (mmm-add-classes
-    '((markdown-elixirp
-      :submode elixir-mode
-      :face mmm-declaration-submode-face
-      :front "^\{:language=\"elixir\"\}[\n\r]+~~~"
-      :back "^~~~$")))
+;;   (mmm-add-classes
+;;     '((markdown-elixirp
+;;       :submode elixir-mode
+;;       :face mmm-declaration-submode-face
+;;       :front "^\{:language=\"elixir\"\}[\n\r]+~~~"
+;;       :back "^~~~$")))
 
-  (mmm-add-classes
-    '((markdown-elixirp
-      :submode elixir-mode
-      :face mmm-declaration-submode-face
-      :front "^```elixir$"
-      :back "^```$")))
+;;   (mmm-add-classes
+;;     '((markdown-elixirp
+;;       :submode elixir-mode
+;;       :face mmm-declaration-submode-face
+;;       :front "^```elixir$"
+;;       :back "^```$")))
 
-  (mmm-add-classes
-    '((markdown-jsp
-      :submode js-mode
-      :face mmm-declaration-submode-face
-      :front "^\{:language=\"javascript\"\}[\n\r]+~~~"
-      :back "^~~~$")))
+;;   (mmm-add-classes
+;;     '((markdown-jsp
+;;       :submode js-mode
+;;       :face mmm-declaration-submode-face
+;;       :front "^\{:language=\"javascript\"\}[\n\r]+~~~"
+;;       :back "^~~~$")))
 
-  (mmm-add-classes
-    '((markdown-ruby
-      :submode ruby-mode
-      :face mmm-declaration-submode-face
-      :front "^~~~\s?ruby[\n\r]"
-      :back "^~~~$")))
+;;   (mmm-add-classes
+;;     '((markdown-ruby
+;;       :submode ruby-mode
+;;       :face mmm-declaration-submode-face
+;;       :front "^~~~\s?ruby[\n\r]"
+;;       :back "^~~~$")))
 
-  (mmm-add-classes
-    '((markdown-elixir
-      :submode elixir-mode
-      :face mmm-declaration-submode-face
-      :front "^~~~\s?elixir[\n\r]"
-      :back "^~~~$")))
+;;   (mmm-add-classes
+;;     '((markdown-elixir
+;;       :submode elixir-mode
+;;       :face mmm-declaration-submode-face
+;;       :front "^~~~\s?elixir[\n\r]"
+;;       :back "^~~~$")))
 
-  (mmm-add-classes
-    '((markdown-js
-      :submode js-mode
-      :face mmm-declaration-submode-face
-      :front "^~~~\s?javascript[\n\r]"
-      :back "^~~~$")))
+;;   (mmm-add-classes
+;;     '((markdown-js
+;;       :submode js-mode
+;;       :face mmm-declaration-submode-face
+;;       :front "^~~~\s?javascript[\n\r]"
+;;       :back "^~~~$")))
 
 
-;; (setq mmm-global-mode 't)
-(setq mmm-submode-decoration-level 0)
+;; ;; (setq mmm-global-mode 't)
+;; (setq mmm-submode-decoration-level 0)
 
-(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-rubyp))
-(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixirp))
-(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-jsp))
-(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-ruby))
-(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixir))
-(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-js))
+;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-rubyp))
+;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixirp))
+;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-jsp))
+;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-ruby))
+;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixir))
+;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-js))
+
 
 (setq custom-file (expand-file-name "customize.el" user-emacs-directory))
 (load custom-file)
