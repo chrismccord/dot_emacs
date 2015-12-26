@@ -114,7 +114,6 @@
 ;; Evil
 ;; =============================================================================
 
-(load "~/.emacs.d/vendor/osx-clipboard-mode/osx-clipboard.el")
 (osx-clipboard-mode +1)
 
 (require 'evil)

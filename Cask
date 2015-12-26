@@ -30,3 +30,4 @@
 (depends-on "markdown-mode")
 (depends-on "emmet-mode")
 (depends-on "gist")
+(depends-on "osx-clipboard" :git "git@github.com:chrismccord/osx-clipboard-mode.git")
