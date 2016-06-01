@@ -153,7 +153,7 @@
 (evil-add-hjkl-bindings occur-mode 'emacs)
 
 
-(evil-set-initial-state 'git-commit-mode 'normal)
+;;(evil-set-initial-state 'git-commit-mode 'normal)
 
 (setq evil-want-C-i-jump t)
 (setq evil-want-C-u-scroll t)
@@ -190,6 +190,12 @@
 ;; =============================================================================
 ;; Evil Packages
 ;; =============================================================================
+
+;; evil-magit
+(setq evil-magit-state 'normal)
+;; optional: disable additional bindings for yanking text
+;; (setq evil-magit-use-y-for-yank nil)
+(require 'evil-magit)
 
 (require 'evil-surround)
 (global-evil-surround-mode 1)
@@ -380,6 +386,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (git-gutter:linum-setup)
 
 (require 'smooth-scrolling)
+(smooth-scrolling-mode t)
 (setq smooth-scroll-margin 3)
 ;; Delay updates to give Emacs a chance for other changes
 (setq linum-delay t)
@@ -451,6 +458,9 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (load "~/.emacs.d/vendor/ujelly-theme/ujelly-theme.el")
 (load-theme 'ujelly)
+
+(setq initial-major-mode 'elixir-mode)
+(setq initial-scratch-message "# scratch")
 
 ; (let ((bg (face-attribute 'default :background)))
 ;   (custom-set-faces
@@ -572,6 +582,9 @@ Repeated invocations toggle between the two most recently open buffers."
                             (sgml-mode 0)
                             (setq evil-shift-width 2)
                             (setq tab-width 2)))
+
+(add-hook 'jsx-mode-hook (lambda ()
+                            (emmet-mode t)))
 
 (add-hook 'css-mode-hook (lambda ()
                             (setq evil-shift-width 2)
