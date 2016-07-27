@@ -7,8 +7,9 @@ This is a nearly wholesale clone of [my vim config](https://github.com/chrismcco
 ## Setup
 
 ```console
+
 $ git clone git@github.com:chrismccord/dot_emacs.git ~/.emacs.d
+$ curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python
 $ cd ~/.emacs.d
-$ brew install cask
-$ cask install
+$ ~/.cask/bin/cask install
 ```
