@@ -20,10 +20,30 @@
 (setq ido-decorations (quote ("\n↪ "     "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
 
 
+;; ido autocomplete
 (require 'flx-ido)
 (ido-mode 1)
 (ido-everywhere 1)
 (flx-ido-mode 1)
+
+;; Fix ido-everywhere not allowing new file or renames
+(defun anti-ido-advice (func &rest args)
+  "Temporarily disable IDO and call function FUNC with arguments ARGS."
+  (interactive)
+  (let ((read-file-name-function #'read-file-name-default))
+    (if (called-interactively-p 'any)
+        (call-interactively func)
+      (apply func args))))
+
+(defun disable-ido (command)
+  "Disable IDO when command COMMAND is called."
+  (advice-add command :around #'anti-ido-advice))
+
+(disable-ido 'rename-file)
+(disable-ido 'write-file)
+(disable-ido 'neotree-create-node)
+(disable-ido 'neotree-rename-node)
+
 
 
 ;; Parens handling
@@ -175,8 +195,11 @@
   "gb" 'mo-git-blame-current
   "gL" 'magit-log
   "gs" 'magit-status
-  "w"  'kill-buffer
+  "w"  'kill-this-buffer
+  "q"  'kill-buffer-and-window
+  "u"  'undo-tree-visualize
   "nn" 'neotree-toggle
+  "nm" 'next-match
   "nf" 'neotree-find
   "gk" 'windmove-up
   "gj" 'windmove-down
@@ -184,7 +207,9 @@
   "gh" 'windmove-left
   "vs" 'split-window-right
   "hs" 'split-window-below
-  "s" 'ispell-word
+  "s"  'ispell-word
+  "ht" 'alchemist-help-search-at-point
+  "gt" 'alchemist-goto-definition-at-point
   "x" 'smex)
 
 ;; =============================================================================
@@ -298,6 +323,8 @@ Repeated invocations toggle between the two most recently open buffers."
     (define-key ido-completion-map (kbd "C-k") 'ido-prev-match)
 ))
 
+(add-hook 'dired-mode-hook
+  '(lambda () (setq ido-enable-replace-completing-read nil)))
 
 ;; =============================================================================
 ;; UI
@@ -519,6 +546,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (flyspell-mode t)
   (turn-off-smartparens-mode)
   (company-mode -1)
+  (mmm-mode 1)
   )
 
 ;; I want underscores as part of word in all modes
@@ -656,66 +684,75 @@ one more than the current position."
 
 
 ;; Enable syntax highlighting in markdown
-;; (require 'mmm-mode)
-;;   (mmm-add-classes
-;;     '((markdown-rubyp
-;;       :submode ruby-mode
-;;       :face mmm-declaration-submode-face
-;;       :front "^\{:language=\"ruby\"\}[\n\r]+~~~"
-;;       :back "^~~~$")))
+(require 'mmm-mode)
+  (mmm-add-classes
+    '((markdown-rubyp
+      :submode ruby-mode
+      :face mmm-declaration-submode-face
+      :front "^\{:language=\"ruby\"\}[\n\r]+~~~"
+      :back "^~~~$")))
 
-;;   (mmm-add-classes
-;;     '((markdown-elixirp
-;;       :submode elixir-mode
-;;       :face mmm-declaration-submode-face
-;;       :front "^\{:language=\"elixir\"\}[\n\r]+~~~"
-;;       :back "^~~~$")))
+  (mmm-add-classes
+    '((markdown-elixirp
+      :submode elixir-mode
+      :face mmm-declaration-submode-face
+      :front "^\{:language=\"elixir\"\}[\n\r]+~~~"
+      :back "^~~~$")))
 
-;;   (mmm-add-classes
-;;     '((markdown-elixirp
-;;       :submode elixir-mode
-;;       :face mmm-declaration-submode-face
-;;       :front "^```elixir$"
-;;       :back "^```$")))
+  (mmm-add-classes
+    '((markdown-elixirp2
+      :submode elixir-mode
+      :face mmm-declaration-submode-face
+      :front "^\`\`\`elixir"
+      :back "^\`\`\`")))
 
-;;   (mmm-add-classes
-;;     '((markdown-jsp
-;;       :submode js-mode
-;;       :face mmm-declaration-submode-face
-;;       :front "^\{:language=\"javascript\"\}[\n\r]+~~~"
-;;       :back "^~~~$")))
+  (mmm-add-classes
+    '((markdown-jsp
+      :submode js-mode
+      :face mmm-declaration-submode-face
+      :front "^\{:language=\"javascript\"\}[\n\r]+~~~"
+      :back "^~~~$")))
 
-;;   (mmm-add-classes
-;;     '((markdown-ruby
-;;       :submode ruby-mode
-;;       :face mmm-declaration-submode-face
-;;       :front "^~~~\s?ruby[\n\r]"
-;;       :back "^~~~$")))
+  (mmm-add-classes
+    '((markdown-jsp2
+      :submode elixir-mode
+      :face mmm-declaration-submode-face
+      :front "^\`\`\`javascript"
+      :back "^\`\`\`")))
 
-;;   (mmm-add-classes
-;;     '((markdown-elixir
-;;       :submode elixir-mode
-;;       :face mmm-declaration-submode-face
-;;       :front "^~~~\s?elixir[\n\r]"
-;;       :back "^~~~$")))
+  (mmm-add-classes
+    '((markdown-ruby
+      :submode ruby-mode
+      :face mmm-declaration-submode-face
+      :front "^~~~\s?ruby[\n\r]"
+      :back "^~~~$")))
 
-;;   (mmm-add-classes
-;;     '((markdown-js
-;;       :submode js-mode
-;;       :face mmm-declaration-submode-face
-;;       :front "^~~~\s?javascript[\n\r]"
-;;       :back "^~~~$")))
+  (mmm-add-classes
+    '((markdown-elixir
+      :submode elixir-mode
+      :face mmm-declaration-submode-face
+      :front "^~~~\s?elixir[\n\r]"
+      :back "^~~~$")))
+
+  (mmm-add-classes
+    '((markdown-js
+      :submode js-mode
+      :face mmm-declaration-submode-face
+      :front "^~~~\s?javascript[\n\r]"
+      :back "^~~~$")))
 
 
-;; ;; (setq mmm-global-mode 't)
-;; (setq mmm-submode-decoration-level 0)
+;; (setq mmm-global-mode 't)
+(setq mmm-submode-decoration-level 0)
 
-;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-rubyp))
-;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixirp))
-;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-jsp))
-;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-ruby))
-;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixir))
-;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-js))
+(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-rubyp))
+(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixirp))
+(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixirp2))
+(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-jsp))
+(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-jsp2))
+(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-ruby))
+(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixir))
+(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-js))
 
 
 (setq custom-file (expand-file-name "customize.el" user-emacs-directory))
