@@ -6,10 +6,18 @@ This is a nearly wholesale clone of [my vim config](https://github.com/chrismcco
 
 ## Setup
 
+Manually:
 ```console
 
 $ git clone git@github.com:chrismccord/dot_emacs.git ~/.emacs.d
 $ curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python
 $ cd ~/.emacs.d
 $ ~/.cask/bin/cask install
+```
+Or using install script:
+```console
+
+$ git clone git@github.com:chrismccord/dot_emacs.git ~/.emacs.d
+$ cd ~/.emacs.d
+$ sh install.sh
 ```
