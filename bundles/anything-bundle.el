@@ -5,6 +5,8 @@
 
 ;;; Code:
 
+(setq warning-minimum-level :emergency)
+
 (setq make-backup-files nil)
 (menu-bar-mode -1)
 
@@ -58,6 +60,9 @@
 (setq sp-highlight-wrap-tag-overlay nil)
 ;; Do not use default slight delay
 (setq show-paren-delay 0)
+
+;; Force y/n prompt instead of yes/no
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; Autocomplete
 ;; (require 'auto-complete-config)
@@ -134,6 +139,9 @@
 ;; Evil
 ;; =============================================================================
 
+
+(load "~/.emacs.d/vendor/osx-clipboard-mode/osx-clipboard.el")
+;; (require 'osx-clipboard-mode)
 (osx-clipboard-mode +1)
 
 (require 'evil)
@@ -514,6 +522,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;     (ruby-end-mode +1)))
 
 (load "~/.emacs.d/vendor/change-case.el")
+(load "~/.emacs.d/vendor/copy-code.el")
 
 ;;; esc quits
 ;; (define-key evil-normal-state-map (kbd "ESC") 'keyboard-quit)
@@ -759,5 +768,14 @@ one more than the current position."
 (load custom-file)
 
 (provide 'anything-bundle)
+
+
+;; Place auto saves and backup files in ~/.emacs.d/
+(setq auto-save-file-name-transforms
+  `((".*" ,(concat user-emacs-directory "auto-save/") t)))
+(setq backup-directory-alist
+      `(("." . ,(expand-file-name
+                 (concat user-emacs-directory "backups")))))
+
 
 ;;; anything-bundle.el ends here
