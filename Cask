@@ -18,7 +18,7 @@
 (depends-on "ruby-mode")
 (depends-on "coffee-mode")
 (depends-on "jsx-mode")
-(depends-on "mmm-mode")
+(depends-on "mmm-mode" :git "git@github.com:purcell/mmm-mode.git")
 (depends-on "flx-ido")
 (depends-on "neotree")
 (depends-on "evil-nerd-commenter")
@@ -34,3 +34,4 @@
 (depends-on "evil-magit")
 (depends-on "dash-at-point")
 (depends-on "highlight2clipboard")
+(depends-on "web-mode")

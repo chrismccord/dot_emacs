@@ -5,9 +5,19 @@
 
 ;;; Code:
 
-(setq warning-minimum-level :emergency)
+;; run shell commands in interactive mode so .bashrc/.zshrc are loaded
+(setq shell-command-switch "-ic")
 
-(setq make-backup-files nil)
+
+;; supress unknown bytecomp warnings???
+(setq warning-minimum-level :error)
+
+
+;; (eval-after-load "etags"
+
+;; disable backups
+;; (setq make-backup-files nil)
+
 (menu-bar-mode -1)
 
 (smex-initialize)
@@ -98,8 +108,7 @@
 (setq company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
 (setq company-dabbrev-downcase nil)                  ; Do not convert to lowercase
 (setq company-selection-wrap-around t)               ; continue from top when reaching bottom
-(eval-after-load 'company
-  '(add-to-list 'company-backends 'company-inf-ruby))
+
 ;; Hack to trigger candidate list on first TAB, then cycle through candiates with TAB
 (defvar tip-showing nil)
 (eval-after-load 'company
@@ -154,7 +163,7 @@
        (setq evil-search-wrap t)
        (setq evil-find-skip-newlines t)
        (setq evil-move-cursor-back nil)
-       (setq evil-mode-line-format 'before)
+       ;; (setq evil-mode-line-format 'before)
        (setq evil-esc-delay 0.001)
        (setq evil-cross-lines t))
 
@@ -218,6 +227,8 @@
   "s"  'ispell-word
   "ht" 'alchemist-help-search-at-point
   "gt" 'alchemist-goto-definition-at-point
+  "mf" 'elixir-format
+  "ll" 'longlines-mode
   "x" 'smex)
 
 ;; =============================================================================
@@ -513,6 +524,29 @@ Repeated invocations toggle between the two most recently open buffers."
 (require 'elixir-mode)
 (add-to-list 'load-path "~/.emacs.d/vendor/alchemist.el")
 (require 'alchemist)
+;; (load "~/.emacs.d/vendor/mix-format.el/elixir-format.el")
+;; (setq elixir-format-mix-path
+;;   (shell-command-to-string "printf %s \"$(which mix)\""))
+;; (require 'elixir-format)
+
+;; (add-to-list 'elixir-mode-hook
+;;   (defun auto-activate-ruby-end-mode-for-elixir-mode ()
+;;     (set (make-variable-buffer-local 'ruby-end-expand-keywords-before-re)
+;;       "\\(?:^\\|\\s-+\\)\\(?:do\\)")
+;;     (set (make-variable-buffer-local 'ruby-end-check-statement-modifiers) nil)
+;;     (ruby-end-mode +1)))
+
+(load "~/.emacs.d/vendor/change-case.el")
+(load "~/.emacs.d/vendor/copy-code.el")
+
+;;; esc quits
+;; (define-key evil-normal-state-map (kbd "ESC") 'keyboard-quit)
+;; (define-key evil-visual-state-map (kbd "ESC") 'keyboard-quit)
+;; (define-key minibuffer-local-map (kbd "ESC") 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-ns-map (kbd "ESC") 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-completion-map (kbd "ESC") 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-must-match-map (kbd "ESC") 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-isearch-map (kbd "ESC") 'minibuffer-keyboard-quit)
 
 ;; (add-to-list 'elixir-mode-hook
 ;;   (defun auto-activate-ruby-end-mode-for-elixir-mode ()
@@ -583,9 +617,11 @@ Repeated invocations toggle between the two most recently open buffers."
 (setq jsx-indent-level 2)
 
 
-
 ;; File handling
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(defun trim-trailing-whitespace ()
+  (when (derived-mode-p 'prog-mode)
+    (delete-trailing-whitespace)))
+(add-hook 'before-save-hook 'trim-trailing-whitespace)
 
 ;; Space indentation - I want tab as two spaces everywhere
 (setq-default indent-tabs-mode nil)
@@ -595,6 +631,9 @@ Repeated invocations toggle between the two most recently open buffers."
 (setq-default css-indent-offset 2)
 (setq-default lisp-indent-offset 2)
 (setq-default sgml-basic-offset 2)
+(setq-default web-mode-markup-indent-offset 2)
+(setq-default web-mode-code-indent-offset 2)
+(setq-default web-mode-css-indent-offset 2)
 (setq-default nxml-child-indent 2)
 
 ;; (add-hook 'enh-ruby-mode-hook (lambda () (setq evil-shift-width 2)))
@@ -603,8 +642,13 @@ Repeated invocations toggle between the two most recently open buffers."
                             (setq tab-width 2)))
 
 (add-hook 'elixir-mode-hook (lambda ()
+                            (mmm-mode t)
                             (setq evil-shift-width 2)
                             (setq tab-width 2)))
+
+(add-hook 'web-mode-hook (lambda ()
+  (web-mode-set-engine "elixir")
+))
 
 (add-hook 'coffee-mode-hook (lambda ()
                             (setq evil-shift-width 2)
@@ -616,7 +660,12 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (add-hook 'html-mode-hook (lambda ()
                             (emmet-mode t)
-                            (sgml-mode 0)
+                            ;; (sgml-mode 0)
+                            (setq evil-shift-width 2)
+                            (setq tab-width 2)))
+
+(add-hook 'web-mode-hook (lambda ()
+                            (emmet-mode t)
                             (setq evil-shift-width 2)
                             (setq tab-width 2)))
 
@@ -692,66 +741,85 @@ one more than the current position."
 ;;==============================================================================
 
 
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '(".eex" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+
+(setq web-mode-engines-alist
+      '(("elixir"    . "\\.eex\\'")
+        ("elixir"  . "\\.ex\\'"))
+)
+
+
 ;; Enable syntax highlighting in markdown
 (require 'mmm-mode)
-  (mmm-add-classes
-    '((markdown-rubyp
-      :submode ruby-mode
-      :face mmm-declaration-submode-face
-      :front "^\{:language=\"ruby\"\}[\n\r]+~~~"
-      :back "^~~~$")))
-
-  (mmm-add-classes
-    '((markdown-elixirp
-      :submode elixir-mode
-      :face mmm-declaration-submode-face
-      :front "^\{:language=\"elixir\"\}[\n\r]+~~~"
-      :back "^~~~$")))
-
-  (mmm-add-classes
-    '((markdown-elixirp2
-      :submode elixir-mode
-      :face mmm-declaration-submode-face
-      :front "^\`\`\`elixir"
-      :back "^\`\`\`")))
-
-  (mmm-add-classes
-    '((markdown-jsp
-      :submode js-mode
-      :face mmm-declaration-submode-face
-      :front "^\{:language=\"javascript\"\}[\n\r]+~~~"
-      :back "^~~~$")))
-
-  (mmm-add-classes
-    '((markdown-jsp2
-      :submode elixir-mode
-      :face mmm-declaration-submode-face
-      :front "^\`\`\`javascript"
-      :back "^\`\`\`")))
-
-  (mmm-add-classes
-    '((markdown-ruby
-      :submode ruby-mode
-      :face mmm-declaration-submode-face
-      :front "^~~~\s?ruby[\n\r]"
-      :back "^~~~$")))
-
-  (mmm-add-classes
-    '((markdown-elixir
-      :submode elixir-mode
-      :face mmm-declaration-submode-face
-      :front "^~~~\s?elixir[\n\r]"
-      :back "^~~~$")))
-
-  (mmm-add-classes
-    '((markdown-js
-      :submode js-mode
-      :face mmm-declaration-submode-face
-      :front "^~~~\s?javascript[\n\r]"
-      :back "^~~~$")))
-
-
+(setq mmm-parse-when-idle 't)
 ;; (setq mmm-global-mode 't)
+
+
+;; (mmm-add-classes
+;;   '((markdown-rubyp
+;;     :submode ruby-mode
+;;     :face mmm-declaration-submode-face
+;;     :front "^\{:language=\"ruby\"\}[\n\r]+~~~"
+;;     :back "^~~~$")))
+
+(mmm-add-classes
+  '((markdown-elixirp
+    :submode elixir-mode
+    :face mmm-declaration-submode-face
+    :front "^\{:language=\"elixir\"\}[\n\r]+~~~"
+    :back "^~~~$")))
+
+(mmm-add-classes
+  '((elixir-eex
+    :submode web-mode
+    :face mmm-declaration-submode-face
+    :front "^.*?\~E\"\"\""
+    :back "^.*?\"\"\"")))
+
+(mmm-add-classes
+  '((markdown-elixirp2
+    :submode elixir-mode
+    :face mmm-declaration-submode-face
+    :front "^\`\`\`elixir"
+    :back "^\`\`\`")))
+
+(mmm-add-classes
+  '((markdown-jsp
+    :submode js-mode
+    :face mmm-declaration-submode-face
+    :front "^\{:language=\"javascript\"\}[\n\r]+~~~"
+    :back "^~~~$")))
+
+(mmm-add-classes
+  '((markdown-jsp2
+    :submode elixir-mode
+    :face mmm-declaration-submode-face
+    :front "^\`\`\`javascript"
+    :back "^\`\`\`")))
+
+;; (mmm-add-classes
+;;   '((markdown-ruby
+;;     :submode ruby-mode
+;;     :face mmm-declaration-submode-face
+;;     :front "^~~~\s?ruby[\n\r]"
+;;     :back "^~~~$")))
+
+(mmm-add-classes
+  '((markdown-elixir
+    :submode elixir-mode
+    :face mmm-declaration-submode-face
+    :front "^~~~\s?elixir[\n\r]"
+    :back "^~~~$")))
+
+(mmm-add-classes
+  '((markdown-js
+    :submode js-mode
+    :face mmm-declaration-submode-face
+    :front "^~~~\s?javascript[\n\r]"
+    :back "^~~~$")))
+
 (setq mmm-submode-decoration-level 0)
 
 (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-rubyp))
@@ -762,6 +830,7 @@ one more than the current position."
 (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-ruby))
 (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixir))
 (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-js))
+(add-to-list 'mmm-mode-ext-classes-alist '(elixir-mode nil elixir-eex))
 
 
 (setq custom-file (expand-file-name "customize.el" user-emacs-directory))
@@ -770,6 +839,8 @@ one more than the current position."
 (provide 'anything-bundle)
 
 
+;; disable lock files
+(setq create-lockfiles nil)
 ;; Place auto saves and backup files in ~/.emacs.d/
 (setq auto-save-file-name-transforms
   `((".*" ,(concat user-emacs-directory "auto-save/") t)))
@@ -777,5 +848,29 @@ one more than the current position."
       `(("." . ,(expand-file-name
                  (concat user-emacs-directory "backups")))))
 
+
+;; (setq server-name (file-name-nondirectory (directory-file-name default-directory)))
+(setq server-name (replace-regexp-in-string "\n$" ""
+                    (shell-command-to-string "current_project_name")))
+
+(unless (server-running-p (symbol-value 'server-name))
+  (server-start)
+)
+
+(defun vc-find-conflicted-file ()
+  "Visit the next conflicted file in the current project."
+  (interactive)
+  (let* ((backend (or (if buffer-file-name (vc-backend buffer-file-name))
+                      (vc-responsible-backend default-directory)
+                      (error "No VC backend")))
+         (files (vc-call-backend backend
+                                 'conflicted-files default-directory)))
+    ;; Don't try and visit the current file.
+    (if (equal (car files) buffer-file-name) (pop files))
+    (if (null files)
+        (message "No more conflicted files")
+      (find-file (pop files))
+      (message "%s more conflicted files after this one"
+               (if files (length files) "No")))))
 
 ;;; anything-bundle.el ends here
