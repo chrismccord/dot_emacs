@@ -589,7 +589,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (flyspell-mode t)
   (turn-off-smartparens-mode)
   (company-mode -1)
-  (mmm-mode 1)
+  ;; (mmm-mode 1)
   )
 
 ;; I want underscores as part of word in all modes
@@ -642,7 +642,7 @@ Repeated invocations toggle between the two most recently open buffers."
                             (setq tab-width 2)))
 
 (add-hook 'elixir-mode-hook (lambda ()
-                            (mmm-mode t)
+                            ;; (mmm-mode t)
                             (setq evil-shift-width 2)
                             (setq tab-width 2)))
 
@@ -752,8 +752,8 @@ one more than the current position."
 
 
 ;; Enable syntax highlighting in markdown
-(require 'mmm-mode)
-(setq mmm-parse-when-idle 't)
+;; (require 'mmm-mode)
+;; (setq mmm-parse-when-idle 't)
 ;; (setq mmm-global-mode 't)
 
 
@@ -764,40 +764,40 @@ one more than the current position."
 ;;     :front "^\{:language=\"ruby\"\}[\n\r]+~~~"
 ;;     :back "^~~~$")))
 
-(mmm-add-classes
-  '((markdown-elixirp
-    :submode elixir-mode
-    :face mmm-declaration-submode-face
-    :front "^\{:language=\"elixir\"\}[\n\r]+~~~"
-    :back "^~~~$")))
+;; (mmm-add-classes
+;;   '((markdown-elixirp
+;;     :submode elixir-mode
+;;     :face mmm-declaration-submode-face
+;;     :front "^\{:language=\"elixir\"\}[\n\r]+~~~"
+;;     :back "^~~~$")))
 
-(mmm-add-classes
-  '((elixir-eex
-    :submode web-mode
-    :face mmm-declaration-submode-face
-    :front "^.*?\~E\"\"\""
-    :back "^.*?\"\"\"")))
+;; (mmm-add-classes
+;;   '((elixir-eex
+;;     :submode web-mode
+;;     :face mmm-declaration-submode-face
+;;     :front "^.*?\~E\"\"\""
+;;     :back "^.*?\"\"\"")))
 
-(mmm-add-classes
-  '((markdown-elixirp2
-    :submode elixir-mode
-    :face mmm-declaration-submode-face
-    :front "^\`\`\`elixir"
-    :back "^\`\`\`")))
+;; (mmm-add-classes
+;;   '((markdown-elixirp2
+;;     :submode elixir-mode
+;;     :face mmm-declaration-submode-face
+;;     :front "^\`\`\`elixir"
+;;     :back "^\`\`\`")))
 
-(mmm-add-classes
-  '((markdown-jsp
-    :submode js-mode
-    :face mmm-declaration-submode-face
-    :front "^\{:language=\"javascript\"\}[\n\r]+~~~"
-    :back "^~~~$")))
+;; (mmm-add-classes
+;;   '((markdown-jsp
+;;     :submode js-mode
+;;     :face mmm-declaration-submode-face
+;;     :front "^\{:language=\"javascript\"\}[\n\r]+~~~"
+;;     :back "^~~~$")))
 
-(mmm-add-classes
-  '((markdown-jsp2
-    :submode elixir-mode
-    :face mmm-declaration-submode-face
-    :front "^\`\`\`javascript"
-    :back "^\`\`\`")))
+;; (mmm-add-classes
+;;   '((markdown-jsp2
+;;     :submode elixir-mode
+;;     :face mmm-declaration-submode-face
+;;     :front "^\`\`\`javascript"
+;;     :back "^\`\`\`")))
 
 ;; (mmm-add-classes
 ;;   '((markdown-ruby
@@ -806,31 +806,31 @@ one more than the current position."
 ;;     :front "^~~~\s?ruby[\n\r]"
 ;;     :back "^~~~$")))
 
-(mmm-add-classes
-  '((markdown-elixir
-    :submode elixir-mode
-    :face mmm-declaration-submode-face
-    :front "^~~~\s?elixir[\n\r]"
-    :back "^~~~$")))
+;; (mmm-add-classes
+;;   '((markdown-elixir
+;;     :submode elixir-mode
+;;     :face mmm-declaration-submode-face
+;;     :front "^~~~\s?elixir[\n\r]"
+;;     :back "^~~~$")))
 
-(mmm-add-classes
-  '((markdown-js
-    :submode js-mode
-    :face mmm-declaration-submode-face
-    :front "^~~~\s?javascript[\n\r]"
-    :back "^~~~$")))
+;; (mmm-add-classes
+;;   '((markdown-js
+;;     :submode js-mode
+;;     :face mmm-declaration-submode-face
+;;     :front "^~~~\s?javascript[\n\r]"
+;;     :back "^~~~$")))
 
-(setq mmm-submode-decoration-level 0)
+;; (setq mmm-submode-decoration-level 0)
 
-(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-rubyp))
-(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixirp))
-(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixirp2))
-(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-jsp))
-(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-jsp2))
-(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-ruby))
-(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixir))
-(add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-js))
-(add-to-list 'mmm-mode-ext-classes-alist '(elixir-mode nil elixir-eex))
+;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-rubyp))
+;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixirp))
+;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixirp2))
+;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-jsp))
+;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-jsp2))
+;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-ruby))
+;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-elixir))
+;; (add-to-list 'mmm-mode-ext-classes-alist '(markdown-mode nil markdown-js))
+;; (add-to-list 'mmm-mode-ext-classes-alist '(elixir-mode nil elixir-eex))
 
 
 (setq custom-file (expand-file-name "customize.el" user-emacs-directory))
