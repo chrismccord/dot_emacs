@@ -10,7 +10,7 @@
 
 
 ;; supress unknown bytecomp warnings???
-(setq warning-minimum-level :error)
+;; (setq warning-minimum-level :error)
 
 
 ;; (eval-after-load "etags"
@@ -537,7 +537,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;     (ruby-end-mode +1)))
 
 (load "~/.emacs.d/vendor/change-case.el")
-(load "~/.emacs.d/vendor/copy-code.el")
+;; (load "~/.emacs.d/vendor/copy-code.el")
 
 ;;; esc quits
 ;; (define-key evil-normal-state-map (kbd "ESC") 'keyboard-quit)
@@ -556,7 +556,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;     (ruby-end-mode +1)))
 
 (load "~/.emacs.d/vendor/change-case.el")
-(load "~/.emacs.d/vendor/copy-code.el")
+;; (load "~/.emacs.d/vendor/copy-code.el")
 
 ;;; esc quits
 ;; (define-key evil-normal-state-map (kbd "ESC") 'keyboard-quit)
@@ -775,7 +775,7 @@ one more than the current position."
   '((elixir-eex
     :submode web-mode
     :face mmm-declaration-submode-face
-    :front "^.*?\~E\"\"\""
+    :front "^.*?\~L\"\"\""
     :back "^.*?\"\"\"")))
 
 (mmm-add-classes
