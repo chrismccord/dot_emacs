@@ -17,7 +17,7 @@
 (depends-on "elixir-mode")
 (depends-on "ruby-mode")
 (depends-on "coffee-mode")
-(depends-on "jsx-mode")
+(depends-on "rjsx-mode")
 (depends-on "mmm-mode" :git "git@github.com:purcell/mmm-mode.git")
 (depends-on "flx-ido")
 (depends-on "neotree")

@@ -1,6 +1,23 @@
-;; -*- emacs-lisp -*- <15/04/22 09:35:53 /Users/chris/.emacs.d/tramp>
+;; -*- emacs-lisp -*- <18/11/23 07:23:18 /Users/chris/.emacs.d/tramp>
 ;; Tramp connection history.  Don't change this file.
 ;; You can delete it, forcing Tramp to reapply the checks.
 
-((["scp" nil "heroku.com" nil nil]
-  nil))
+((["sudo" "root" "chris-nrmbp.local" nil nil]
+   ("uname" "Darwin 18.0.0")
+   ("locale" "LC_ALL=en_US.UTF-8")
+   ("test" "test")
+   ("remote-path"
+     ("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/usr/local/bin"))
+   ("remote-shell" "/bin/sh")
+   ("readlink" nil)
+   ("perl-file-spec" t)
+   ("perl-cwd-realpath" t)
+   ("perl" "\\perl")
+   ("stat" nil)
+   ("id" "/usr/bin/id")
+   ("gid-integer" 0)
+   ("file-exists" "test -e")
+   ("gid-string" "wheel")
+   ("uid-integer" 0)
+   ("bzr" nil)
+   ("git" "\\git")))

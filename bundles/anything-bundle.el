@@ -431,7 +431,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; ;; If you would like to use git-gutter.el and linum-mode
 ;; (git-gutter:linum-setup)
 
-(require 'smooth-scrolling)
+;; (require 'smooth-scrolling)
 (smooth-scrolling-mode t)
 (setq smooth-scroll-margin 3)
 ;; Delay updates to give Emacs a chance for other changes
@@ -612,9 +612,9 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;       (let ((web-mode-enable-part-face nil))
 ;;         ad-do-it)
 ;;     ad-do-it))
-(require 'jsx-mode)
-(add-to-list 'auto-mode-alist '("\\.js[x]?\\'" . jsx-mode))
-(setq jsx-indent-level 2)
+(require 'rjsx-mode)
+(add-to-list 'auto-mode-alist '("\\.js[x]?\\'" . rjsx-mode))
+(setq js-indent-level 2)
 
 
 ;; File handling
